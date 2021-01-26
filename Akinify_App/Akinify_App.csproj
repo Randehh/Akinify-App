@@ -44,7 +44,7 @@
     <ManifestKeyFile>Akinify_App_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>Akinify_App_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
