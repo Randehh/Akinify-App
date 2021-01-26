@@ -22,8 +22,7 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
-        <Button Content="Login" Click="LoginButton_Click" Grid.Row="0" Grid.Column="0" Margin="5" />
-        <TextBlock Text="{Binding UserDisplayName}" Margin="5" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"/>
+        <TextBlock Text="{Binding UserDisplayName}" Margin="5" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FontStyle="Italic"/>
 
         <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,5" VerticalAlignment="Center" IsEnabled="{Binding IsLoggedIn}">
             <Grid.RowDefinitions>

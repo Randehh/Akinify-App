@@ -40,7 +40,7 @@ namespace Akinify_App {
 			}
 		}
 
-		public string UserDisplayName => CurrentUserProfile != null ? "Logged in as: " + CurrentUserProfile.DisplayName : "No user";
+		public string UserDisplayName => CurrentUserProfile != null ? $"Logged in as: {CurrentUserProfile.DisplayName}" : "Not logged in";
 		public bool IsLoggedIn => CurrentUser != null;
 
 		/*
@@ -152,14 +152,11 @@ namespace Akinify_App {
 		/*
 		 * Spotify API calls
 		 */
-		public async void Login() {
-			m_VisualLogger.AddLine("Requesting login details...");
-			await SpotifyAuthenticator.Start(async client => {
-				m_VisualLogger.AddLine("Succesfully logged in, requesting user profile...");
-				CurrentUser = client;
-				CurrentUserProfile = await client.UserProfile.Current();
-				m_VisualLogger.AddLine("User profile received.");
-			});
+		public async void SetActiveClient(SpotifyClient client) {
+			m_VisualLogger.AddLine("Succesfully logged in, requesting user profile...");
+			CurrentUser = client;
+			CurrentUserProfile = await client.UserProfile.Current();
+			m_VisualLogger.AddLine("User profile received.");
 		}
 
 		public async void FindArtistsByName(string name) {

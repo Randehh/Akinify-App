@@ -88,6 +88,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AuthenticationWindow.xaml.cs">
+      <DependentUpon>AuthenticationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AuthenticationWindowVM.cs" />
     <Compile Include="MainWindowVM.cs" />
     <Compile Include="Utilities\ProgressBarWrapper.cs" />
     <Compile Include="Utilities\RequestStaggerer.cs" />
@@ -96,6 +100,10 @@
     <Compile Include="Utilities\ArtistListDisplayConverter.cs" />
     <Compile Include="Utilities\EnumBindingSourceExtension.cs" />
     <Compile Include="Utilities\VisualLogger.cs" />
+    <Page Include="AuthenticationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
