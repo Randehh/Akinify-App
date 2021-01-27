@@ -198,7 +198,9 @@ namespace Akinify_App {
 			for(int i = 1; i < depth; i++) {
 				estimatedTaskSize *= 8;
 			}
-			m_SearchProgressBar.AddTask(estimatedTaskSize);
+			ProgressBarWrapperTask artistSearchTask =  m_SearchProgressBar.AddTask(1, estimatedTaskSize);
+			ProgressBarWrapperTask trackSearchTask = m_SearchProgressBar.AddTask(3, 1);
+			int trackCountEstimate = 0;
 
 			Dictionary<string, Tuple<FullArtist, int>> uniqueArtists = new Dictionary<string, Tuple<FullArtist, int>>();
 			Dictionary<int, List<string>> artistIdsToGet = new Dictionary<int, List<string>>();
@@ -217,8 +219,10 @@ namespace Akinify_App {
 					ArtistsRelatedArtistsResponse relatedArtists = await CurrentUser.Artists.GetRelatedArtists(nextArtistId);
 					foreach (FullArtist artist in relatedArtists.Artists) {
 						if (!uniqueArtists.ContainsKey(artist.Uri)) {
-							uniqueArtists.Add(artist.Uri, new Tuple<FullArtist, int>(artist, GetTrackCountForDepth(depth)));
-							m_SearchProgressBar.CompleteTask(1);
+							int trackCount = GetTrackCountForDepth(depth);
+							trackCountEstimate += trackCount;
+							uniqueArtists.Add(artist.Uri, new Tuple<FullArtist, int>(artist, trackCount));
+							artistSearchTask.CompleteSection();
 							if (depth != 1) {
 								artistIdsToGet[depth - 1].Add(artist.Id);
 							}
@@ -235,10 +239,12 @@ namespace Akinify_App {
 				}
 			}
 
-			m_SearchProgressBar.CompleteTask(estimatedTaskSize - uniqueArtists.Count);
+			artistSearchTask.ForceComplete();
+			trackSearchTask.UpdateSectionCount(trackCountEstimate);
+
 			m_VisualLogger.AddLine($"Gathering track data for {uniqueArtists.Count} artists...");
 			foreach (Tuple<FullArtist, int> artistData in uniqueArtists.Values) {
-				GetAndAddTopTracks(artistData.Item1, artistData.Item2);
+				GetAndAddTopTracks(artistData.Item1, artistData.Item2, trackSearchTask);
 			}
 		}
 
@@ -259,13 +265,12 @@ namespace Akinify_App {
 			return 20;
 		}
 
-		public async void GetAndAddTopTracks(FullArtist artist, int trackCount) {
-			m_SearchProgressBar.AddTask(1);
+		public async void GetAndAddTopTracks(FullArtist artist, int trackCount, ProgressBarWrapperTask trackSearchTask) {
 			await Task.Delay(m_RequestStaggerer.GetNextDelay());
 			ArtistsTopTracksResponse response = await CurrentUser.Artists.GetTopTracks(artist.Id, new ArtistsTopTracksRequest("DE"));
-			m_SearchProgressBar.CompleteTask(1);
+			trackSearchTask.CompleteSection(trackCount);
 
-			for(int i = 0; i < trackCount && i < response.Tracks.Count; i++) {
+			for (int i = 0; i < trackCount && i < response.Tracks.Count; i++) {
 				Playlist.AddTrack(response.Tracks[i]);
 			}
 			OnPropertyChanged(nameof(PlaylistTracks));
