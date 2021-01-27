@@ -43,28 +43,20 @@ namespace Akinify_App {
 			m_OnUpdate();
 		}
 
-		public List<List<string>> SelectTracks(int count) {
-			List<List<string>> batches = new List<List<string>>();
-			Random rand = new Random(DateTime.Now.ToString().GetHashCode());
-			List<FullTrack> uniqueTracks = new List<FullTrack>(m_Tracks);
-			List<string> selectedTracks = new List<string>();
-			int totalSelectedTracks = 0;
-			while (uniqueTracks.Count > 0 && totalSelectedTracks < count) {
-				int index = rand.Next(0, uniqueTracks.Count);
-				selectedTracks.Add(uniqueTracks[index].Uri);
-				uniqueTracks.RemoveAt(index);
-				totalSelectedTracks++;
+		public List<List<string>> SelectTracks(int count, SelectionType selectionType) {
+			SpotifyPlaylistSelector selector;
+			switch (selectionType) {
+				default:
+				case SelectionType.Random:
+					selector = new SpotifyPlaylistSelectorRandom(m_Tracks, count);
+					break;
 
-				if (selectedTracks.Count == 100) {
-					batches.Add(selectedTracks);
-					selectedTracks = new List<string>();
-				}
+				case SelectionType.Most_Popular:
+					selector = new SpotifyPlaylistSelectorMostPopular(m_Tracks, count);
+					break;
 			}
-			
-			if(selectedTracks.Count != 0) {
-				batches.Add(selectedTracks);
-			}
-			return batches;
+
+			return selector.SelectTracks();
 		}
 	}
 }

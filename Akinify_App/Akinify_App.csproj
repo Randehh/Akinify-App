@@ -93,11 +93,14 @@
     </Compile>
     <Compile Include="AuthenticationWindowVM.cs" />
     <Compile Include="MainWindowVM.cs" />
+    <Compile Include="Playlist\SpotifyPlaylistSelector.cs" />
+    <Compile Include="Playlist\SpotifyPlaylistSelectorMostPopular.cs" />
+    <Compile Include="Playlist\SpotifyPlaylistSelectorRandom.cs" />
     <Compile Include="Utilities\ProgressBarWrapper.cs" />
     <Compile Include="Utilities\ProgressBarWrapperTask.cs" />
     <Compile Include="Utilities\RequestStaggerer.cs" />
     <Compile Include="Utilities\SpotifyAuthenticator.cs" />
-    <Compile Include="Utilities\SpotifyPlaylist.cs" />
+    <Compile Include="Playlist\SpotifyPlaylist.cs" />
     <Compile Include="Utilities\ArtistListDisplayConverter.cs" />
     <Compile Include="Utilities\EnumBindingSourceExtension.cs" />
     <Compile Include="Utilities\VisualLogger.cs" />

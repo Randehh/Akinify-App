@@ -114,6 +114,15 @@ namespace Akinify_App {
 			}
 		}
 
+		private SelectionType m_CurrentSelectionType = SelectionType.Random;
+		public SelectionType CurrentSelectionType {
+			get { return m_CurrentSelectionType; }
+			set {
+				m_CurrentSelectionType = value;
+				OnPropertyChanged(nameof(CurrentSelectionType));
+			}
+		}
+
 		/*
 		 * Logger
 		 */
@@ -281,7 +290,7 @@ namespace Akinify_App {
 			PlaylistCreateRequest request = new PlaylistCreateRequest("Akinify - " + SelectedArtist.Name);
 			request.Description = "A playlist based artists whose listeners listen to " + SelectedArtist.Name + ".";
 			FullPlaylist playlist = await CurrentUser.Playlists.Create(CurrentUserProfile.Id, request);
-			List<List<string>> trackUriBatches = Playlist.SelectTracks(PlaylistSize);
+			List<List<string>> trackUriBatches = Playlist.SelectTracks(PlaylistSize, CurrentSelectionType);
 			foreach(List<string> trackUris in trackUriBatches) {
 				await Task.Delay(100);
 				await CurrentUser.Playlists.AddItems(playlist.Id, new PlaylistAddItemsRequest(trackUris));
@@ -297,5 +306,10 @@ namespace Akinify_App {
 		Familiar,
 		Normal,
 		Unfamiliar
+	}
+
+	public enum SelectionType {
+		Random,
+		Most_Popular
 	}
 }

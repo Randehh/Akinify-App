@@ -121,11 +121,11 @@
                 </Grid>
                 <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="0,5,0,0" IsEnabled="{Binding IsSearchComplete}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0"/>
-                        <ColumnDefinition Width="67"/>
-                        <ColumnDefinition Width="133*" MinWidth="20" MaxWidth="200"/>
-                        <ColumnDefinition Width="67*"/>
-                        <ColumnDefinition Width="483*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
@@ -133,9 +133,13 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Text="Playlist creation" Grid.Row="0" Grid.ColumnSpan="5" FontWeight="Bold" Margin="0,0,0,5"/>
-                    <TextBlock Text="Playlist size:" Grid.Row="1" Grid.Column="0" Margin="0,0,5,0" Grid.ColumnSpan="2"/>
-                    <TextBox Grid.Column="2" Grid.Row="1" Margin="0,0,5,0" Grid.ColumnSpan="2" Text="{Binding PlaylistSize}"/>
-                    <Button Content="Create playlist" Grid.Row="1" Click="CreatePlaylist_Click" Grid.Column="4"/>
+                    <TextBlock Text="Playlist size:" Grid.Row="1" Grid.Column="0" Margin="0,0,5,0"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="0,0,5,0" Text="{Binding PlaylistSize}"/>
+                    <TextBlock Text="Selection type:" Grid.Row="1" Grid.Column="2" Margin="10,0,5,0"/>
+                    <ComboBox Grid.Row="1" Grid.Column="3" Margin="0,0,5,0"
+                          ItemsSource="{Binding Source={ local:EnumBindingSource EnumType=local:SelectionType}}"
+                          SelectedValue ="{Binding CurrentSelectionType}"/>
+                    <Button Content="Create playlist" Grid.Row="1" Grid.Column="4" Click="CreatePlaylist_Click"/>
                 </Grid>
             </Grid>
         </Grid>
