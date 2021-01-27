@@ -1,4 +1,5 @@
-﻿using SpotifyAPI.Web;
+﻿using Newtonsoft.Json;
+using SpotifyAPI.Web;
 using SpotifyAPI.Web.Auth;
 using System;
 using System.Collections.Generic;
@@ -13,33 +14,52 @@ namespace Akinify_App {
 		private static readonly Uri m_CallbackUri = new Uri("http://localhost:5000/callback");
 		private static EmbedIOAuthServer m_AuthServer;
 
-		private static Action<SpotifyClient> m_OnComplete;
-
+		private static string m_TokenPath = "token.json";
 		private static string m_ClientId = "YOUR_ID_HERE";
-		private static string m_ClientSecret = "YOUR_SECRET_HERE";
 
-		public static async Task Start(Action<SpotifyClient> onComplete) {
-			m_OnComplete = onComplete;
+		public static bool StartCached(Action<SpotifyClient> onComplete) {
+			if (!File.Exists(m_TokenPath)) {
+				return false;
+			}
+
+			string json = File.ReadAllText(m_TokenPath);
+			PKCETokenResponse token = JsonConvert.DeserializeObject<PKCETokenResponse>(json);
+
+			PKCEAuthenticator authenticator = new PKCEAuthenticator(m_ClientId, token);
+            authenticator.TokenRefreshed += (sender, refreshedToken) => File.WriteAllText(m_TokenPath, JsonConvert.SerializeObject(refreshedToken));
+
+			SpotifyClientConfig config = SpotifyClientConfig.CreateDefault().WithAuthenticator(authenticator);
+			SpotifyClient client = new SpotifyClient(config);
+
+			onComplete(client);
+			return true;
+		}
+
+		public static async Task StartRemote(Action<SpotifyClient> onComplete) {
+            (string verifier, string challenge) = PKCEUtil.GenerateCodes();
+
 			m_AuthServer = new EmbedIOAuthServer(m_CallbackUri, 5000);
 			await m_AuthServer.Start();
 
-			m_AuthServer.AuthorizationCodeReceived += OnAuthorizationCodeReceived;
+			m_AuthServer.AuthorizationCodeReceived += async (sender, response) =>
+            {
+                await m_AuthServer.Stop();
+                PKCETokenResponse token = await new OAuthClient().RequestToken(
+                  new PKCETokenRequest(m_ClientId, response.Code, m_AuthServer.BaseUri, verifier)
+                );
 
-			LoginRequest request = new LoginRequest(m_AuthServer.BaseUri, m_ClientId, LoginRequest.ResponseType.Code) {
-				Scope = new List<string> { Scopes.PlaylistModifyPublic }
+                File.WriteAllText(m_TokenPath, JsonConvert.SerializeObject(token));
+				StartCached(onComplete);
 			};
-			BrowserUtil.Open(request.ToUri());
-		}
 
-		private static async Task OnAuthorizationCodeReceived(object sender, AuthorizationCodeResponse response) {
-			await m_AuthServer.Stop();
+            var request = new LoginRequest(m_AuthServer.BaseUri, m_ClientId, LoginRequest.ResponseType.Code) {
+                CodeChallenge = challenge,
+                CodeChallengeMethod = "S256",
+                Scope = new List<string> { Scopes.PlaylistModifyPublic }
+			};
 
-			SpotifyClientConfig config = SpotifyClientConfig.CreateDefault();
-			AuthorizationCodeTokenRequest tokenRequest = new AuthorizationCodeTokenRequest(m_ClientId, m_ClientSecret, response.Code, m_CallbackUri);
-			AuthorizationCodeTokenResponse tokenResponse = await new OAuthClient(config).RequestToken(tokenRequest);
-
-			SpotifyClient client = new SpotifyClient(tokenResponse.AccessToken);
-			m_OnComplete(client);
-		}
-	}
+            Uri uri = request.ToUri();
+            BrowserUtil.Open(uri);
+        }
+    }
 }

@@ -39,7 +39,7 @@ namespace Akinify_App {
 		}
 
 		private async void LoginButton_Click(object sender, RoutedEventArgs e) {
-			await SpotifyAuthenticator.Start(OnLoggedIn);
+			await SpotifyAuthenticator.StartRemote(OnLoggedIn);
 		}
 
 		private void OnLoggedIn(SpotifyClient client) {

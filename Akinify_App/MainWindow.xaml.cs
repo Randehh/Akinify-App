@@ -21,6 +21,10 @@ namespace Akinify_App {
 			if (m_ViewModel.IsLoggedIn) return;
 
 			if (m_AuthenticationWindow == null) {
+				if (SpotifyAuthenticator.StartCached(OnLoggedIn)) {
+					return;
+				}
+
 				m_AuthenticationWindow = new AuthenticationWindow(OnLoggedIn);
 				m_AuthenticationWindow.Owner = this;
 				m_AuthenticationWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -34,7 +38,10 @@ namespace Akinify_App {
 
 		private void OnLoggedIn(SpotifyClient client) {
 			m_ViewModel.SetActiveClient(client);
-			Dispatcher.Invoke(m_AuthenticationWindow.Close);
+
+			if (m_AuthenticationWindow != null) {
+				Dispatcher.Invoke(m_AuthenticationWindow.Close);
+			}
 		}
 
 		private void ArtistTextBox_Update(object sender, RoutedEventArgs e) {
