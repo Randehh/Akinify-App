@@ -48,6 +48,10 @@ namespace Akinify_App {
 			m_ViewModel.FindArtistsByName((sender as TextBox).Text);
 		}
 
+		private void PlaylistTextBox_Update(object sender, RoutedEventArgs e) {
+			//m_ViewModel.FindPlaylistByName((sender as TextBox).Text);
+		}
+
 		private void GeneratePlaylist_Click(object sender, RoutedEventArgs e) {
 			m_ViewModel.GeneratePlaylist();
 		}

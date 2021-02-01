@@ -50,7 +50,7 @@ namespace Akinify_App {
 		}
 
 		private void OnTick(object sender, EventArgs e) {
-			m_ProgressBar.Value = Lerp(m_ProgressBar.Value, m_TargetValue, 0.1f);
+			m_ProgressBar.Value = Lerp(m_ProgressBar.Value, m_TargetValue, 0.01f);
 		}
 
 		private double Lerp(double firstFloat, double secondFloat, float by) {

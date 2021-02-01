@@ -11,147 +11,236 @@
         <local:ArtistListDisplayConverter x:Key="ArtistListDisplayConverter"/>
     </Window.Resources>
     <Grid Margin="5">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="3*"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="5*"/>
-        </Grid.ColumnDefinitions>
-        <TextBlock Text="{Binding UserDisplayName}" Margin="5" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FontStyle="Italic"/>
-
-        <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,5" VerticalAlignment="Center" IsEnabled="{Binding IsLoggedIn}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-
-            <Grid Grid.Row="0" Margin="0,0,0,5">
-                <TextBlock Text="Search settings" Grid.Row="0" Grid.ColumnSpan="3" FontWeight="Bold"/>
-            </Grid>
-            <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="0.5*"/>
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0" Grid.Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Artist search:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBox Grid.Row="0" Grid.Column="1" TextChanged="ArtistTextBox_Update" />
-                    <ComboBox Grid.Row="0" Grid.Column="2" Margin="5,0,0,0"
-                          ItemsSource="{Binding ArtistSearchResults}" DisplayMemberPath="Name"
-                          SelectedValuePath="Id" SelectedValue="{Binding SelectedArtistId}"
-                          SelectedItem="{Binding SelectedArtist}"/>
-                </Grid>
-                <Grid Grid.Row="1" Grid.Column="1" Margin="20,0,5,0" VerticalAlignment="Center">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Search depth:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <ComboBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"
-                          ItemsSource="{Binding Source={ local:EnumBindingSource EnumType=local:SearchDepth}}"
-                          SelectedValue ="{Binding CurrentSearchDepth}"/>
-                </Grid>
-                <Button Grid.Row="1" Grid.Column="3" Content="Generate" Click="GeneratePlaylist_Click" IsEnabled="{Binding CanGeneratePlaylist}"/>
-            </Grid>
-        </Grid>
-        <ListView Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{ Binding PlaylistTracks }">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Width="200" DisplayMemberBinding="{Binding Name}">
-                        <GridViewColumnHeader Content=" Name" Grid.Column="0" HorizontalContentAlignment="Left" />
-                    </GridViewColumn>
-                    <GridViewColumn Width="200" DisplayMemberBinding="{Binding Artists, Converter={ StaticResource ArtistListDisplayConverter }}">
-                        <GridViewColumnHeader Content=" Artist(s)" Grid.Column="1" HorizontalContentAlignment="Left" />
-                    </GridViewColumn>
-                    <GridViewColumn Width="200" DisplayMemberBinding="{Binding Album.Name}">
-                        <GridViewColumnHeader Content=" Album" Grid.Column="2" HorizontalContentAlignment="Left" />
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <Grid Grid.Row="3" Grid.ColumnSpan="2" Height="auto" Margin="0,5">
-            <Grid Height="auto">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="Search progress:" Grid.Column="0" Grid.Row="0" Width="auto"/>
-                <ProgressBar Name="SearchProgressBar" Grid.Column="1" Grid.Row="0" Height="20" Margin="5,0,0,0"/>
-                <TextBlock Name="SearchProgressBarText" Text="100%" Grid.Column="1" Grid.Row="0" Height="20" Margin="5,0,0,0" TextAlignment="Center" VerticalAlignment="Center"/>
-                <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,5">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Playlist statistics" Grid.Row="0" Grid.ColumnSpan="2" FontWeight="Bold" Margin="0,0,0,5"/>
-                    <TextBlock Text="Track count:" Grid.Row="1" Grid.Column="0"/>
-                    <TextBlock Text="{Binding Playlist.TrackCount}" Grid.Row="1" Grid.Column="1"/>
-                    <TextBlock Text="Artist count:" Grid.Row="2" Grid.Column="0"/>
-                    <TextBlock Text="{Binding Playlist.ArtistCount}" Grid.Row="2" Grid.Column="1"/>
-                    <TextBlock Text="Album count:" Grid.Row="3" Grid.Column="0"/>
-                    <TextBlock Text="{Binding Playlist.AlbumCount}" Grid.Row="3" Grid.Column="1"/>
-                </Grid>
-                <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="0,5,0,0" IsEnabled="{Binding IsSearchComplete}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Text="Playlist creation" Grid.Row="0" Grid.ColumnSpan="5" FontWeight="Bold" Margin="0,0,0,5"/>
-                    <TextBlock Text="Playlist size:" Grid.Row="1" Grid.Column="0" Margin="0,0,5,0"/>
-                    <TextBox Grid.Row="1" Grid.Column="1" Margin="0,0,5,0" Text="{Binding PlaylistSize}"/>
-                    <TextBlock Text="Selection type:" Grid.Row="1" Grid.Column="2" Margin="10,0,5,0"/>
-                    <ComboBox Grid.Row="1" Grid.Column="3" Margin="0,0,5,0"
-                          ItemsSource="{Binding Source={ local:EnumBindingSource EnumType=local:SelectionType}}"
-                          SelectedValue ="{Binding CurrentSelectionType}"/>
-                    <Button Content="Create playlist" Grid.Row="1" Grid.Column="4" Click="CreatePlaylist_Click"/>
-                </Grid>
-            </Grid>
-        </Grid>
-        <Grid Grid.Row="4" Grid.ColumnSpan="2" VerticalAlignment="Stretch">
+        <Grid  IsEnabled="{Binding IsLoggedIn}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <TextBlock Text="Log" Grid.Row="0"  FontWeight="Bold" Margin="0,0,0,5"/>
-            <ScrollViewer x:Name="LogScrollViewer" Grid.Row="1">
-                <TextBlock Text="{Binding LogText}"/>
-            </ScrollViewer>
+            <TextBlock Text="{Binding UserDisplayName}" Margin="5" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" FontStyle="Italic"/>
+
+            <Grid Grid.Column="0" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="0,0,0,5">
+                    <TextBlock Text="Search by..." Grid.Row="0" Grid.ColumnSpan="3" FontWeight="Bold"/>
+                </Grid>
+                <TabControl Grid.Row="1">
+                    <TabItem Header="Artist">
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Grid.Column="0" Grid.Row="1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Artist search:" Grid.Row="0" Grid.Column="0"/>
+                                        <TextBox Grid.Row="0" Grid.Column="1" TextChanged="ArtistTextBox_Update" />
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="0,5,0,0">
+                                <ListView Grid.Row="2" Grid.ColumnSpan="2" 
+                                          ItemsSource="{ Binding ArtistSearchResults }" SelectedItem="{Binding SelectedArtist}"
+                                          SelectedValuePath="Id" SelectedValue="{Binding SelectedArtistId}">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Width="500" DisplayMemberBinding="{Binding Name}">
+                                                <GridViewColumnHeader Content=" Artist name" Grid.Column="0" HorizontalContentAlignment="Left" />
+                                            </GridViewColumn>
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                            </Grid>
+                            <Grid Grid.Row="2" Grid.Column="1" Margin="0,5,0,0" VerticalAlignment="Center">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Search depth:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                                <ComboBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"
+                                    ItemsSource="{Binding Source={ local:EnumBindingSource EnumType=local:SearchDepth}}"
+                                    SelectedValue ="{Binding CurrentSearchDepth}"/>
+                            </Grid>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Playlist">
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Grid.Column="0" Grid.Row="1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Playlist search:" Grid.Row="0" Grid.Column="0"/>
+                                        <TextBox Grid.Row="0" Grid.Column="1" TextChanged="PlaylistTextBox_Update" />
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="0,5,0,0">
+                                <ListView Grid.Row="2" Grid.ColumnSpan="2" 
+                                          ItemsSource="{ Binding ArtistSearchResults }" SelectedItem="{Binding SelectedArtist}"
+                                          SelectedValuePath="Id" SelectedValue="{Binding SelectedArtistId}">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Width="500" DisplayMemberBinding="{Binding Name}">
+                                                <GridViewColumnHeader Content=" Artist name" Grid.Column="0" HorizontalContentAlignment="Left" />
+                                            </GridViewColumn>
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                            </Grid>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+                <Button Grid.Row="2" Content="Generate" Click="GeneratePlaylist_Click" IsEnabled="{Binding CanGeneratePlaylist}" Margin="0,5,0,0" />
+            </Grid>
+            <Grid Grid.Column="1" Grid.Row="1" Margin="4" Background="#FFC9C9C9">
+                <Image/>
+            </Grid>
+            <Grid Grid.Column="2" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <ListView Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{ Binding PlaylistTracks }">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Width="200" DisplayMemberBinding="{Binding Name}">
+                                <GridViewColumnHeader Content=" Name" Grid.Column="0" HorizontalContentAlignment="Left" />
+                            </GridViewColumn>
+                            <GridViewColumn Width="200" DisplayMemberBinding="{Binding Artists, Converter={ StaticResource ArtistListDisplayConverter }}">
+                                <GridViewColumnHeader Content=" Artist(s)" Grid.Column="1" HorizontalContentAlignment="Left" />
+                            </GridViewColumn>
+                            <GridViewColumn Width="200" DisplayMemberBinding="{Binding Album.Name}">
+                                <GridViewColumnHeader Content=" Album" Grid.Column="2" HorizontalContentAlignment="Left" />
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <Grid Grid.Row="3" Grid.ColumnSpan="2" Height="auto" Margin="0,5">
+                    <Grid Height="auto">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Search progress:" Grid.Column="0" Grid.Row="0" Width="auto"/>
+                        <ProgressBar Name="SearchProgressBar" Grid.Column="1" Grid.Row="0" Height="20" Margin="5,0,0,0"/>
+                        <TextBlock Name="SearchProgressBarText" Text="100%" Grid.Column="1" Grid.Row="0" Height="20" Margin="5,0,0,0" TextAlignment="Center" VerticalAlignment="Center"/>
+                        <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Playlist statistics" Grid.Row="0" Grid.ColumnSpan="2" FontWeight="Bold" Margin="0,0,0,5"/>
+                            <TextBlock Text="Track count:" Grid.Row="1" Grid.Column="0"/>
+                            <TextBlock Text="{Binding Playlist.TrackCount}" Grid.Row="1" Grid.Column="1"/>
+                            <TextBlock Text="Artist count:" Grid.Row="2" Grid.Column="0"/>
+                            <TextBlock Text="{Binding Playlist.ArtistCount}" Grid.Row="2" Grid.Column="1"/>
+                            <TextBlock Text="Album count:" Grid.Row="3" Grid.Column="0"/>
+                            <TextBlock Text="{Binding Playlist.AlbumCount}" Grid.Row="3" Grid.Column="1"/>
+                        </Grid>
+                        <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="0,5,0,0" IsEnabled="{Binding IsSearchComplete}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="Playlist creation" Grid.Row="0" Grid.ColumnSpan="5" FontWeight="Bold" Margin="0,0,0,5"/>
+                            <TextBlock Text="Playlist size:" Grid.Row="1" Grid.Column="0" Margin="0,0,5,0"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Margin="0,0,5,0" Text="{Binding PlaylistSize}"/>
+                            <TextBlock Text="Selection type:" Grid.Row="1" Grid.Column="2" Margin="10,0,5,0"/>
+                            <ComboBox Grid.Row="1" Grid.Column="3" Margin="0,0,5,0"
+                          ItemsSource="{Binding Source={ local:EnumBindingSource EnumType=local:SelectionType}}"
+                          SelectedValue ="{Binding CurrentSelectionType}"/>
+                            <Button Content="Create playlist" Grid.Row="1" Grid.Column="4" Click="CreatePlaylist_Click"/>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid Grid.Row="4" Grid.ColumnSpan="2" VerticalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Log" Grid.Row="0"  FontWeight="Bold" Margin="0,0,0,5"/>
+                    <ScrollViewer x:Name="LogScrollViewer" Grid.Row="1">
+                        <TextBlock Text="{Binding LogText}"/>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+
         </Grid>
     </Grid>
 </Window>
