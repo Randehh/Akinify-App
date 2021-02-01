@@ -44,20 +44,16 @@ namespace Akinify_App {
 			}
 		}
 
-		private void ArtistTextBox_Update(object sender, RoutedEventArgs e) {
-			m_ViewModel.FindArtistsByName((sender as TextBox).Text);
-		}
-
-		private void PlaylistTextBox_Update(object sender, RoutedEventArgs e) {
-			//m_ViewModel.FindPlaylistByName((sender as TextBox).Text);
+		private void QueryTextBox_Update(object sender, RoutedEventArgs e) {
+			m_ViewModel.SearchQuery.SearchText = (sender as TextBox).Text;
 		}
 
 		private void GeneratePlaylist_Click(object sender, RoutedEventArgs e) {
-			m_ViewModel.GeneratePlaylist();
+			m_ViewModel.SearchQuery.Search();
 		}
 
 		private void CreatePlaylist_Click(object sender, RoutedEventArgs e) {
-			m_ViewModel.CreatePlaylist();
+			m_ViewModel.CreatePlaylist("haha");
 		}
 	}
 }

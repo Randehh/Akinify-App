@@ -1,21 +1,18 @@
 ﻿using SpotifyAPI.Web;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Windows.Markup;
 
 namespace Akinify_App {
 	public class MainWindowVM : INotifyPropertyChanged {
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		public EnumBindingSourceExtension SearchDepthEnumBindingSource { get; } = new EnumBindingSourceExtension(typeof(SearchDepth));
-		private RequestStaggerer m_RequestStaggerer = new RequestStaggerer();
-		private ProgressBarWrapper m_SearchProgressBar;
+		public RequestStaggerer RequestStaggerer { get; set; } = new RequestStaggerer();
+		public ProgressBarWrapper SearchProgressBar { get; private set; }
 
 		/*
 		 * User functions
@@ -31,7 +28,7 @@ namespace Akinify_App {
 		}
 
 		private PrivateUser m_CurrentUserProfile;
-		private PrivateUser CurrentUserProfile {
+		public PrivateUser CurrentUserProfile {
 			get { return m_CurrentUserProfile; }
 			set {
 				m_CurrentUserProfile = value;
@@ -44,31 +41,45 @@ namespace Akinify_App {
 		public bool IsLoggedIn => CurrentUser != null;
 
 		/*
-		 * Artist search
+		 * Search query
 		 */
-		private ObservableCollection<FullArtist> m_ArtistSearchResults = new ObservableCollection<FullArtist>();
-		public ObservableCollection<FullArtist> ArtistSearchResults {
-			get { return m_ArtistSearchResults; }
+		private SearchQueryType m_CurrentSearchType = SearchQueryType.Artist;
+		private Dictionary<SearchQueryType, SearchQueryBase> m_SearchQueries = new Dictionary<SearchQueryType, SearchQueryBase>();
+		public SearchQueryBase SearchQuery => m_SearchQueries[m_CurrentSearchType];
+
+		public bool IsSearchQueryArtist {
+			get {
+				return m_CurrentSearchType == SearchQueryType.Artist;
+			}
 			set {
-				m_ArtistSearchResults = value;
-				OnPropertyChanged(nameof(ArtistSearchResults));
-				SelectedArtist = value.Count != 0 ? value[0] : null;
-				OnPropertyChanged(nameof(CanGeneratePlaylist));
+				if (value == true) {
+					UpdateSearchQuery(SearchQueryType.Artist);
+				}
+				OnPropertyChanged(nameof(IsSearchQueryArtist));
 			}
 		}
 
-		private FullArtist m_SelectedArtist;
-		public FullArtist SelectedArtist {
-			get { return m_SelectedArtist; }
+		public bool IsSearchQueryPlaylist {
+			get {
+				return m_CurrentSearchType == SearchQueryType.Playlist;
+			}
 			set {
-				m_SelectedArtist = value;
-				OnPropertyChanged(nameof(SelectedArtist));
+				if (value == true) {
+					UpdateSearchQuery(SearchQueryType.Playlist);
+				}
+				OnPropertyChanged(nameof(IsSearchQueryPlaylist));
 			}
 		}
 
-		public string SelectedArtistId { get; set; }
-		public bool CanGeneratePlaylist => SelectedArtist != null;
-		public bool IsSearchComplete => m_SearchProgressBar.IsCompleted;
+		public string SearchText {
+			set {
+				SearchQuery.SearchText = value;
+				OnPropertyChanged(nameof(SearchText));
+			}
+			get {
+				return SearchQuery.SearchText;
+			}
+		}
 
 		/*
 		 * Depth
@@ -126,7 +137,7 @@ namespace Akinify_App {
 		/*
 		 * Logger
 		 */
-		private VisualLogger m_VisualLogger;
+		public VisualLogger VisualLogger { get; private set; }
 		private ScrollViewer m_LogScrollViewer;
 		private string m_LogText = "";
 		public string LogText {
@@ -142,162 +153,65 @@ namespace Akinify_App {
 
 		public MainWindowVM(ProgressBar searchProgressBar, TextBlock searchProgressText, ScrollViewer logScrollViewer) {
 			m_LogScrollViewer = logScrollViewer;
-			m_VisualLogger = new VisualLogger();
-			m_VisualLogger.OnUpdated += (logText) => { LogText = logText; };
-			m_VisualLogger.AddLine("Standing by.");
+			VisualLogger = new VisualLogger();
+			VisualLogger.OnUpdated += (logText) => { LogText = logText; };
+			VisualLogger.AddLine("Standing by.");
 
-			m_SearchProgressBar = new ProgressBarWrapper(searchProgressBar, searchProgressText, () => {
-				OnPropertyChanged(nameof(IsSearchComplete));
-				if (IsSearchComplete) {
-					m_VisualLogger.AddLine("Search completed.");
+			SearchProgressBar = new ProgressBarWrapper(searchProgressBar, searchProgressText, () => {
+				OnPropertyChanged(nameof(SearchProgressBar));
+				if (SearchProgressBar.IsCompleted) {
+					VisualLogger.AddLine("Search completed.");
 				}
 			});
+
+			UpdateSearchQuery(SearchQueryType.Artist);
 		}
 
 		public void UpdatePlaylistStats() {
 			OnPropertyChanged(nameof(Playlist));
 		}
 
+		public void UpdateSearchQuery(SearchQueryType queryType) {
+			m_CurrentSearchType = queryType;
+
+			if (!m_SearchQueries.ContainsKey(queryType)) {
+				switch (queryType) {
+					case SearchQueryType.Artist:
+						m_SearchQueries.Add(queryType, new SearchQueryArtist(this));
+						break;
+
+					case SearchQueryType.Playlist:
+						m_SearchQueries.Add(queryType, new SearchQueryPlaylist(this));
+						break;
+				}
+			}
+
+			OnPropertyChanged(nameof(SearchQuery));
+		}
+
 		/*
 		 * Spotify API calls
 		 */
 		public async void SetActiveClient(SpotifyClient client) {
-			m_VisualLogger.AddLine("Succesfully logged in, requesting user profile...");
+			VisualLogger.AddLine("Succesfully logged in, requesting user profile...");
 			CurrentUser = client;
 			CurrentUserProfile = await client.UserProfile.Current();
-			m_VisualLogger.AddLine("User profile received.");
+			VisualLogger.AddLine("User profile received.");
 		}
 
-		public async void FindArtistsByName(string name) {
-			if (string.IsNullOrEmpty(name)) {
-				ArtistSearchResults = new ObservableCollection<FullArtist>();
-			} else {
-				SearchResponse response = await CurrentUser.Search.Item(new SearchRequest(SearchRequest.Types.Artist, name));
-				ArtistSearchResults = new ObservableCollection<FullArtist>(response.Artists.Items);
-			}
-		}
-
-		public void GeneratePlaylist() {
-			Playlist = new SpotifyPlaylist(UpdatePlaylistStats);
-
-			int depth = -1;
-			switch (CurrentSearchDepth) {
-				case SearchDepth.Unfamiliar:
-					depth = 3;
-					break;
-
-				case SearchDepth.Normal:
-					depth = 2;
-					break;
-
-				case SearchDepth.Familiar:
-					depth = 1;
-					break;
-			}
-
-			m_RequestStaggerer.Reset();
-			m_SearchProgressBar.Reset();
-			GetRelatedArtistsAndAddTopTracks(SelectedArtistId, depth);
-		}
-
-		public async void GetRelatedArtistsAndAddTopTracks(string artistId, int depth) {
-			m_VisualLogger.AddLine("Gathering related artists...");
-
-			int estimatedTaskSize = 20;
-			for(int i = 1; i < depth; i++) {
-				estimatedTaskSize *= 8;
-			}
-			ProgressBarWrapperTask artistSearchTask =  m_SearchProgressBar.AddTask(1, estimatedTaskSize);
-			ProgressBarWrapperTask trackSearchTask = m_SearchProgressBar.AddTask(3, 1);
-			int trackCountEstimate = 0;
-
-			Dictionary<string, Tuple<FullArtist, int>> uniqueArtists = new Dictionary<string, Tuple<FullArtist, int>>();
-			Dictionary<int, List<string>> artistIdsToGet = new Dictionary<int, List<string>>();
-			for(int i = 1; i <= depth; i++) {
-				artistIdsToGet[i] = new List<string>();
-			}
-
-			artistIdsToGet[depth].Add(artistId);
-
-			List<string> currentArtistsToGet = artistIdsToGet[depth];
-			while (currentArtistsToGet.Count != 0) {
-				string nextArtistId = currentArtistsToGet[0];
-				await Task.Delay(100);
-
-				if (!string.IsNullOrEmpty(nextArtistId)) {
-					ArtistsRelatedArtistsResponse relatedArtists = await CurrentUser.Artists.GetRelatedArtists(nextArtistId);
-					foreach (FullArtist artist in relatedArtists.Artists) {
-						if (!uniqueArtists.ContainsKey(artist.Uri)) {
-							int trackCount = GetTrackCountForDepth(depth);
-							trackCountEstimate += trackCount;
-							uniqueArtists.Add(artist.Uri, new Tuple<FullArtist, int>(artist, trackCount));
-							artistSearchTask.CompleteSection();
-							if (depth != 1) {
-								artistIdsToGet[depth - 1].Add(artist.Id);
-							}
-						}
-					}
-				}
-
-				currentArtistsToGet.RemoveAt(0);
-				if(currentArtistsToGet.Count == 0) {
-					depth--;
-					if (artistIdsToGet.ContainsKey(depth)) {
-						currentArtistsToGet = artistIdsToGet[depth];
-					}
-				}
-			}
-
-			artistSearchTask.ForceComplete();
-			trackSearchTask.UpdateSectionCount(trackCountEstimate);
-
-			m_VisualLogger.AddLine($"Gathering track data for {uniqueArtists.Count} artists...");
-			foreach (Tuple<FullArtist, int> artistData in uniqueArtists.Values) {
-				GetAndAddTopTracks(artistData.Item1, artistData.Item2, trackSearchTask);
-			}
-		}
-
-		private int GetTrackCountForDepth(int currentDepth) {
-			switch (CurrentSearchDepth) {
-				case SearchDepth.Unfamiliar:
-					if (currentDepth == 3) return 20;
-					else if (currentDepth == 2) return 10;
-					else return 5;
-
-				case SearchDepth.Normal:
-					if (currentDepth == 2) return 20;
-					else return 10;
-
-				case SearchDepth.Familiar:
-					return 20;
-			}
-			return 20;
-		}
-
-		public async void GetAndAddTopTracks(FullArtist artist, int trackCount, ProgressBarWrapperTask trackSearchTask) {
-			await Task.Delay(m_RequestStaggerer.GetNextDelay());
-			ArtistsTopTracksResponse response = await CurrentUser.Artists.GetTopTracks(artist.Id, new ArtistsTopTracksRequest("DE"));
-			trackSearchTask.CompleteSection(trackCount);
-
-			for (int i = 0; i < trackCount && i < response.Tracks.Count; i++) {
-				Playlist.AddTrack(response.Tracks[i]);
-			}
-			OnPropertyChanged(nameof(PlaylistTracks));
-		}
-
-		public async void CreatePlaylist() {
-			m_VisualLogger.AddLine("Creating playlist with " + PlaylistSize + " tracks...");
-			PlaylistCreateRequest request = new PlaylistCreateRequest("Akinify - " + SelectedArtist.Name);
-			request.Description = "A playlist based artists whose listeners listen to " + SelectedArtist.Name + ".";
+		public async void CreatePlaylist(string artistName) {
+			VisualLogger.AddLine("Creating playlist with " + PlaylistSize + " tracks...");
+			PlaylistCreateRequest request = new PlaylistCreateRequest("Akinify - " + artistName);
+			request.Description = "A playlist based artists whose listeners listen to " + artistName + ".";
 			FullPlaylist playlist = await CurrentUser.Playlists.Create(CurrentUserProfile.Id, request);
 			List<List<string>> trackUriBatches = Playlist.SelectTracks(PlaylistSize, CurrentSelectionType);
-			foreach(List<string> trackUris in trackUriBatches) {
+			foreach (List<string> trackUris in trackUriBatches) {
 				await Task.Delay(100);
 				await CurrentUser.Playlists.AddItems(playlist.Id, new PlaylistAddItemsRequest(trackUris));
 			}
 		}
 
-		protected void OnPropertyChanged([CallerMemberName] string name = null) {
+		public void OnPropertyChanged([CallerMemberName] string name = null) {
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 		}
 	}
@@ -311,5 +225,10 @@ namespace Akinify_App {
 	public enum SelectionType {
 		Random,
 		Most_Popular
+	}
+
+	public enum SearchQueryType {
+		Artist,
+		Playlist
 	}
 }

@@ -96,6 +96,9 @@
     <Compile Include="Playlist\SpotifyPlaylistSelector.cs" />
     <Compile Include="Playlist\SpotifyPlaylistSelectorMostPopular.cs" />
     <Compile Include="Playlist\SpotifyPlaylistSelectorRandom.cs" />
+    <Compile Include="SearchQuery\SearchQueryBase.cs" />
+    <Compile Include="SearchQuery\SearchQueryPlaylist.cs" />
+    <Compile Include="SearchQuery\SearchQueryArtist.cs" />
     <Compile Include="Utilities\ProgressBarWrapper.cs" />
     <Compile Include="Utilities\ProgressBarWrapperTask.cs" />
     <Compile Include="Utilities\RequestStaggerer.cs" />
