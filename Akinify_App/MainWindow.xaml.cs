@@ -55,5 +55,5 @@ namespace Akinify_App {
 		private void CreatePlaylist_Click(object sender, RoutedEventArgs e) {
 			m_ViewModel.CreatePlaylist("haha");
 		}
-	}
+    }
 }

@@ -4,26 +4,25 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Akinify_App"
-        xmlns:spotify="clr-namespace:SpotifyAPI.Web;assembly=SpotifyAPI.Web"
         mc:Ignorable="d"
         Title="Akinify" Height="auto" Width="auto" MinHeight="500" MinWidth="700">
     <Window.Resources>
         <local:ArtistListDisplayConverter x:Key="ArtistListDisplayConverter"/>
     </Window.Resources>
-    <Grid Margin="10">
-        <Grid  IsEnabled="{Binding IsLoggedIn}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="10,10,10,0" IsEnabled="{Binding IsLoggedIn}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="20"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <TextBlock Text="{Binding UserDisplayName}" Margin="5" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" FontStyle="Italic"/>
 
-            <Grid Grid.Column="0" Grid.Row="1">
+            <Grid Grid.Column="0" Grid.Row="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
@@ -66,16 +65,7 @@
                                 </Grid>
                             </Grid>
                             <Grid Grid.Row="1" Margin="0,5,0,0">
-                                <ListView Grid.Row="2" Grid.ColumnSpan="2" 
-                                          ItemsSource="{ Binding SearchQuery.BaseArtistList }" SelectedItem="{Binding SearchQuery.SelectedArtist}">
-                                    <ListView.View>
-                                        <GridView>
-                                            <GridViewColumn Width="500" DisplayMemberBinding="{Binding Name}">
-                                                <GridViewColumnHeader Content=" Artist name" Grid.Column="0" HorizontalContentAlignment="Left" />
-                                            </GridViewColumn>
-                                        </GridView>
-                                    </ListView.View>
-                                </ListView>
+                                <local:ArtistDisplayTable/>
                             </Grid>
                             <Grid Grid.Row="2" Grid.Column="1" Margin="0,5,0,0" VerticalAlignment="Center">
                                 <Grid.RowDefinitions>
@@ -92,7 +82,7 @@
                             </Grid>
                         </Grid>
                     </TabItem>
-                    <TabItem Header="Playlist" IsSelected="{Binding IsSearchQueryPlaylist}" IsEnabled="False">
+                    <TabItem Header="Playlist" IsSelected="{Binding IsSearchQueryPlaylist}">
                         <Grid Grid.Row="1" Margin="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -124,27 +114,17 @@
                                 </Grid>
                             </Grid>
                             <Grid Grid.Row="1" Margin="0,5,0,0">
-                                <ListView Grid.Row="2" Grid.ColumnSpan="2" 
-                                          ItemsSource="{ Binding ArtistSearchResults }" SelectedItem="{Binding SelectedArtist}"
-                                          SelectedValuePath="Id" SelectedValue="{Binding SelectedArtistId}">
-                                    <ListView.View>
-                                        <GridView>
-                                            <GridViewColumn Width="500" DisplayMemberBinding="{Binding Name}">
-                                                <GridViewColumnHeader Content=" Artist name" Grid.Column="0" HorizontalContentAlignment="Left" />
-                                            </GridViewColumn>
-                                        </GridView>
-                                    </ListView.View>
-                                </ListView>
+                                <local:PlaylistDisplayTable/>
                             </Grid>
                         </Grid>
                     </TabItem>
                 </TabControl>
                 <Button Grid.Row="2" Content="Generate" Click="GeneratePlaylist_Click" IsEnabled="{Binding SearchQuery.CanGeneratePlaylist}" Margin="0,5,0,0" />
             </Grid>
-            <Grid Grid.Column="1" Grid.Row="1" Margin="9,4" Background="#FFC9C9C9">
+            <Grid Grid.Column="1" Grid.Row="0" Margin="9,4" Background="#FFC9C9C9">
                 <Image/>
             </Grid>
-            <Grid Grid.Column="2" Grid.Row="1">
+            <Grid Grid.Column="2" Grid.Row="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="4*"/>
@@ -156,7 +136,7 @@
                     <ColumnDefinition Width="5*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="Playlist" Grid.Row="0" Grid.ColumnSpan="3" FontWeight="Bold"/>
-                <ListView Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{ Binding PlaylistTracks } " Margin="0,5,0,0">
+                <ListView Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{ Binding PlaylistTracks }" Margin="0,5,0,0">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Width="200" DisplayMemberBinding="{Binding Name}">
@@ -183,8 +163,8 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Search progress:" Grid.Column="0" Grid.Row="0" Width="auto"/>
-                        <ProgressBar Name="SearchProgressBar" Grid.Column="1" Grid.Row="0" Height="20" Margin="5,0,0,0"/>
-                        <TextBlock Name="SearchProgressBarText" Text="100%" Grid.Column="1" Grid.Row="0" Height="20" Margin="5,0,0,0" TextAlignment="Center" VerticalAlignment="Center"/>
+                        <ProgressBar Name="SearchProgressBar" Grid.Column="1" Grid.Row="0" Margin="5,0,0,0"/>
+                        <TextBlock Name="SearchProgressBarText" Text="100%" Grid.Column="1" Grid.Row="0" Margin="5,0,0,0" TextAlignment="Center" VerticalAlignment="Center"/>
                         <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,5">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>
@@ -218,9 +198,9 @@
                             </Grid.RowDefinitions>
 
                             <TextBlock Text="Playlist creation" Grid.Row="0" Grid.ColumnSpan="5" FontWeight="Bold" Margin="0,0,0,5"/>
-                            <TextBlock Text="Playlist size:" Grid.Row="1" Grid.Column="0" Margin="0,0,5,0"/>
+                            <TextBlock Text="Playlist size:" Grid.Row="1" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Center"/>
                             <TextBox Grid.Row="1" Grid.Column="1" Margin="0,0,5,0" Text="{Binding PlaylistSize}"/>
-                            <TextBlock Text="Selection type:" Grid.Row="1" Grid.Column="2" Margin="10,0,5,0"/>
+                            <TextBlock Text="Selection type:" Grid.Row="1" Grid.Column="2" Margin="10,0,5,0" VerticalAlignment="Center"/>
                             <ComboBox Grid.Row="1" Grid.Column="3" Margin="0,0,5,0"
                                 ItemsSource="{Binding Source={ local:EnumBindingSource EnumType=local:SelectionType}}"
                                 SelectedValue ="{Binding CurrentSelectionType}"/>
@@ -239,7 +219,10 @@
                     </ScrollViewer>
                 </Grid>
             </Grid>
-
         </Grid>
+        
+        <TextBlock Text="{Binding UserDisplayName}" Grid.Row="1" Margin="0,5,0,0" Padding="5"
+                       VerticalAlignment="Top"
+                       FontStyle="Italic" Background="Gainsboro"/>
     </Grid>
 </Window>

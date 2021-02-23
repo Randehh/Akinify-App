@@ -2,15 +2,26 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Akinify_App {
-	public partial class SearchQueryBase {
+
+	public partial class SearchQueryBase<T> : ISearchQuery {
 
 		protected MainWindowVM m_ViewModel;
 
-		public ObservableCollection<FullArtist> BaseArtistList { get; set; }
+		public ObservableCollection<T> SearchResults { get; set; } = new ObservableCollection<T>();
+		private T m_SelectedResult;
+		public T SelectedResult {
+			get {
+				return m_SelectedResult;
+			}
+			set {
+				m_SelectedResult = value;
+				m_ViewModel.OnPropertyChanged(nameof(m_ViewModel.SearchQuery));
+			}
+		}
+		public bool CanGeneratePlaylist => SelectedResult != null;
 
 		private string m_SearchText = "";
 		public string SearchText {
@@ -36,8 +47,8 @@ namespace Akinify_App {
 			throw new NotImplementedException();
 		}
 
-		public virtual List<FullArtist> GetArtistsToGenerateFrom() {
-			return new List<FullArtist>();
+		public virtual Task<List<string>> GetArtistsToGenerateFrom() {
+			return Task.Run(() => { return new List<string>(); });
 		}
 
 		public async void Search() {
@@ -61,12 +72,11 @@ namespace Akinify_App {
 			m_ViewModel.RequestStaggerer.Reset();
 			m_ViewModel.SearchProgressBar.Reset();
 
-			List<FullArtist> artists = GetArtistsToGenerateFrom();
-			List<string> artistIds = artists.Select(artist => artist.Id).ToList();
-
 			m_ViewModel.VisualLogger.AddLine("Gathering related artists...");
 
-			int estimatedTaskSize = 20 * artists.Count;
+			List<string> artistIds = await GetArtistsToGenerateFrom();
+
+			int estimatedTaskSize = 20 * artistIds.Count;
 			for (int i = 1; i < depth; i++) {
 				estimatedTaskSize *= 8;
 			}

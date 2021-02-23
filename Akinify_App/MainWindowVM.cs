@@ -44,8 +44,8 @@ namespace Akinify_App {
 		 * Search query
 		 */
 		private SearchQueryType m_CurrentSearchType = SearchQueryType.Artist;
-		private Dictionary<SearchQueryType, SearchQueryBase> m_SearchQueries = new Dictionary<SearchQueryType, SearchQueryBase>();
-		public SearchQueryBase SearchQuery => m_SearchQueries[m_CurrentSearchType];
+		private Dictionary<SearchQueryType, ISearchQuery> m_SearchQueries = new Dictionary<SearchQueryType, ISearchQuery>();
+		public ISearchQuery SearchQuery => m_SearchQueries[m_CurrentSearchType];
 
 		public bool IsSearchQueryArtist {
 			get {
