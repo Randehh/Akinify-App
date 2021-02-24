@@ -15,7 +15,7 @@
     <Grid>
         <ListView x:Name="ListViewParent"
                 Grid.Row="2" Grid.ColumnSpan="2" 
-                ItemsSource="{ Binding SearchQuery.SearchResults }" SelectedItem="{Binding SearchQuery.SelectedResult}">
+                ItemsSource="{ Binding Items }" SelectedItem="{Binding SelectedItem}" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
             <ListView.View>
                 <GridView x:Name="GridViewEntries" ColumnHeaderContainerStyle="{StaticResource ColumnHeaderStyle}"/>
             </ListView.View>

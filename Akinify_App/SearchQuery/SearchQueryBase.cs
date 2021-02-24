@@ -2,35 +2,48 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Akinify_App {
 
-	public partial class SearchQueryBase<T> : ISearchQuery {
+	public partial class SearchQueryBase<T> : ISearchQuery, IDataTableContext<T> {
 
 		protected MainWindowVM m_ViewModel;
 
-		public ObservableCollection<T> SearchResults { get; set; } = new ObservableCollection<T>();
-		private T m_SelectedResult;
-		public T SelectedResult {
-			get {
-				return m_SelectedResult;
-			}
+		private ObservableCollection<T> m_Items = new ObservableCollection<T>();
+		public ObservableCollection<T> Items {
+			get { return m_Items; }
 			set {
-				m_SelectedResult = value;
-				m_ViewModel.OnPropertyChanged(nameof(m_ViewModel.SearchQuery));
+				m_Items = value;
+				OnPropertyChanged(nameof(Items));
 			}
 		}
-		public bool CanGeneratePlaylist => SelectedResult != null;
+
+		private T m_SelectedItem;
+		public T SelectedItem {
+			get {
+				return m_SelectedItem;
+			}
+			set {
+				m_SelectedItem = value;
+				OnPropertyChanged(nameof(SelectedItem));
+				OnPropertyChanged(nameof(CanGeneratePlaylist));
+			}
+		}
+		public bool CanGeneratePlaylist => SelectedItem != null;
 
 		private string m_SearchText = "";
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
 		public string SearchText {
 			get {
 				return m_SearchText;
 			}
 			set {
 				m_SearchText = value;
-				m_ViewModel.OnPropertyChanged(nameof(m_ViewModel.SearchQuery));
 				OnUpdateSearchText(value);
 			}
 		}
@@ -81,6 +94,8 @@ namespace Akinify_App {
 				estimatedTaskSize *= 8;
 			}
 
+			m_ViewModel.VisualLogger.AddLine($"Getting an estimated maximum of {estimatedTaskSize} related artists...");
+
 			ProgressBarWrapperTask artistSearchTask = m_ViewModel.SearchProgressBar.AddTask(1, estimatedTaskSize);
 			ProgressBarWrapperTask trackSearchTask = m_ViewModel.SearchProgressBar.AddTask(3, 1);
 			int trackCountEstimate = 0;
@@ -95,7 +110,7 @@ namespace Akinify_App {
 				}
 			}
 
-
+			int currentProgress = 0;
 			List<string> currentArtistsToGet = artistIdsToGet[depth];
 			while (currentArtistsToGet.Count != 0) {
 				string nextArtistId = currentArtistsToGet[0];
@@ -105,6 +120,11 @@ namespace Akinify_App {
 					ArtistsRelatedArtistsResponse relatedArtists = await m_ViewModel.CurrentUser.Artists.GetRelatedArtists(nextArtistId);
 					foreach (FullArtist artist in relatedArtists.Artists) {
 						if (!uniqueArtists.ContainsKey(artist.Uri)) {
+							currentProgress++;
+							if (currentProgress % 10 == 0) {
+								m_ViewModel.VisualLogger.AddLine($"Related artists remaining: {estimatedTaskSize - currentProgress}");
+							}
+
 							int trackCount = GetTrackCountForDepth(depth);
 							trackCountEstimate += trackCount;
 							uniqueArtists.Add(artist.Uri, new Tuple<FullArtist, int>(artist, trackCount));
@@ -128,7 +148,7 @@ namespace Akinify_App {
 			artistSearchTask.ForceComplete();
 			trackSearchTask.UpdateSectionCount(trackCountEstimate);
 
-			m_ViewModel.VisualLogger.AddLine($"Gathering track data for {uniqueArtists.Count} artists...");
+			m_ViewModel.VisualLogger.AddLine($"Gathering top track data for {uniqueArtists.Count} artists...");
 			foreach (Tuple<FullArtist, int> artistData in uniqueArtists.Values) {
 				GetAndAddTopTracks(artistData.Item1, artistData.Item2, trackSearchTask);
 			}
@@ -152,14 +172,23 @@ namespace Akinify_App {
 		}
 
 		public async void GetAndAddTopTracks(FullArtist artist, int trackCount, ProgressBarWrapperTask trackSearchTask) {
-			await Task.Delay(m_ViewModel.RequestStaggerer.GetNextDelay());
+			int nextDelay = m_ViewModel.RequestStaggerer.GetNextDelay();
+			bool printLog = nextDelay % (RequestStaggerer.STAGGER_TIME * 10) == 0;
+			await Task.Delay(nextDelay);
+			if(printLog) {
+				int remainingArtists = (m_ViewModel.RequestStaggerer.CurrentWait - nextDelay) / RequestStaggerer.STAGGER_TIME;
+				m_ViewModel.VisualLogger.AddLine($"Top songs of artists remaining: {remainingArtists}");
+			}
 			ArtistsTopTracksResponse response = await m_ViewModel.CurrentUser.Artists.GetTopTracks(artist.Id, new ArtistsTopTracksRequest("DE"));
 			trackSearchTask.CompleteSection(trackCount);
 
 			for (int i = 0; i < trackCount && i < response.Tracks.Count; i++) {
 				m_ViewModel.Playlist.AddTrack(response.Tracks[i]);
 			}
-			m_ViewModel.OnPropertyChanged(nameof(m_ViewModel.PlaylistTracks));
+		}
+
+		public void OnPropertyChanged([CallerMemberName] string name = null) {
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 		}
 	}
 }

@@ -45,7 +45,7 @@ namespace Akinify_App {
 		}
 
 		private void QueryTextBox_Update(object sender, RoutedEventArgs e) {
-			m_ViewModel.SearchQuery.SearchText = (sender as TextBox).Text;
+			m_ViewModel.SearchText = (sender as TextBox).Text;
 		}
 
 		private void GeneratePlaylist_Click(object sender, RoutedEventArgs e) {
@@ -53,7 +53,7 @@ namespace Akinify_App {
 		}
 
 		private void CreatePlaylist_Click(object sender, RoutedEventArgs e) {
-			m_ViewModel.CreatePlaylist("haha");
+			m_ViewModel.CreatePlaylist();
 		}
     }
 }

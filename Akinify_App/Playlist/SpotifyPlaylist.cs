@@ -2,13 +2,38 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Akinify_App {
-	public class SpotifyPlaylist {
+	public class SpotifyPlaylist : IDataTableContext<FullTrack> {
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		public string Name { get; set; } = "New playlist";
 
 		private Action m_OnUpdate;
 		private List<FullTrack> m_Tracks = new List<FullTrack>();
-		public ObservableCollection<FullTrack> Tracks => new ObservableCollection<FullTrack>(m_Tracks);
+		public List<FullTrack> Tracks {
+			get { return m_Tracks; }
+			set {
+				m_Tracks = value;
+				OnPropertyChanged(nameof(Tracks));
+				OnPropertyChanged(nameof(Items));
+			}
+		}
+		public ObservableCollection<FullTrack> Items => new ObservableCollection<FullTrack>(m_Tracks);
+
+		private FullTrack m_SelectedItem;
+		public FullTrack SelectedItem {
+			get {
+				return m_SelectedItem;
+			}
+			set {
+				m_SelectedItem = value;
+				OnPropertyChanged(nameof(SelectedItem));
+			}
+		}
 
 		private HashSet<string> m_ArtistIdSet = new HashSet<string>();
 		private HashSet<string> m_TrackIdSet = new HashSet<string>();
@@ -41,6 +66,9 @@ namespace Akinify_App {
 			m_Tracks.Add(track);
 
 			m_OnUpdate();
+
+			OnPropertyChanged(nameof(Tracks));
+			OnPropertyChanged(nameof(Items));
 		}
 
 		public List<List<string>> SelectTracks(int count, SelectionType selectionType) {
@@ -57,6 +85,10 @@ namespace Akinify_App {
 			}
 
 			return selector.SelectTracks();
+		}
+
+		public void OnPropertyChanged([CallerMemberName] string name = null) {
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 		}
 	}
 }

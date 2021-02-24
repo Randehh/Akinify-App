@@ -11,10 +11,10 @@ namespace Akinify_App {
 
 		protected override async void OnUpdateSearchText(string s) {
 			if (string.IsNullOrEmpty(s)) {
-				SearchResults = new ObservableCollection<FullArtist>();
+				Items = new ObservableCollection<FullArtist>();
 			} else {
 				SearchResponse response = await m_ViewModel.CurrentUser.Search.Item(new SearchRequest(SearchRequest.Types.Artist, s));
-				SearchResults = new ObservableCollection<FullArtist>(response.Artists.Items);
+				Items = new ObservableCollection<FullArtist>(response.Artists.Items);
 				m_ViewModel.OnPropertyChanged(nameof(m_ViewModel.SearchQuery));
 			}
 		}
@@ -25,7 +25,7 @@ namespace Akinify_App {
 
 		public override Task<List<string>> GetArtistsToGenerateFrom() {
 			return Task.Run(() => {
-				return new List<string>() { SelectedResult.Id };
+				return new List<string>() { SelectedItem.Id };
 			});
 		}
 	}

@@ -17,8 +17,17 @@ namespace Akinify_App {
 
 		public void AddLine(string s) {
 			m_StringBuilder.Append("\n");
-			m_StringBuilder.Append(s);
+			m_StringBuilder.Append($"{GetTimeString()} - {s}");
 			OnUpdated(m_StringBuilder.ToString());
+		}
+
+		public string GetTimeString() {
+			StringBuilder sb = new StringBuilder();
+			DateTime time = DateTime.Now;
+			sb.Append(time.Hour < 10 ? $"0{time.Hour}:" : $"{time.Hour}:");
+			sb.Append(time.Minute < 10 ? $"0{time.Minute}:" : $"{time.Minute}:");
+			sb.Append(time.Second < 10 ? $"0{time.Second}" : $"{time.Second}");
+			return sb.ToString();
 		}
 	}
 }

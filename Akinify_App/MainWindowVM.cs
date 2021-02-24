@@ -111,7 +111,7 @@ namespace Akinify_App {
 				if(Playlist == null) {
 					return new ObservableCollection<FullTrack>();
 				} else {
-					return new ObservableCollection<FullTrack>(Playlist.Tracks);
+					return new ObservableCollection<FullTrack>(Playlist.Items);
 				}
 			}
 		}
@@ -199,16 +199,17 @@ namespace Akinify_App {
 			VisualLogger.AddLine("User profile received.");
 		}
 
-		public async void CreatePlaylist(string artistName) {
-			VisualLogger.AddLine("Creating playlist with " + PlaylistSize + " tracks...");
-			PlaylistCreateRequest request = new PlaylistCreateRequest("Akinify - " + artistName);
-			request.Description = "A playlist based artists whose listeners listen to " + artistName + ".";
+		public async void CreatePlaylist() {
+			VisualLogger.AddLine($"Creating playlist with {PlaylistSize} tracks...");
+			PlaylistCreateRequest request = new PlaylistCreateRequest(Playlist.Name);
+			request.Description = "Created via Akinify.";
 			FullPlaylist playlist = await CurrentUser.Playlists.Create(CurrentUserProfile.Id, request);
 			List<List<string>> trackUriBatches = Playlist.SelectTracks(PlaylistSize, CurrentSelectionType);
 			foreach (List<string> trackUris in trackUriBatches) {
 				await Task.Delay(100);
 				await CurrentUser.Playlists.AddItems(playlist.Id, new PlaylistAddItemsRequest(trackUris));
 			}
+			VisualLogger.AddLine($"Playlist created: {Playlist.Name}");
 		}
 
 		public void OnPropertyChanged([CallerMemberName] string name = null) {

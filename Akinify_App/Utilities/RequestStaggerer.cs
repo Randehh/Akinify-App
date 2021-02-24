@@ -10,14 +10,21 @@ namespace Akinify_App {
 	/// Ensures a consistent delay between each consecutive request to not overload the API
 	/// </summary>
 	public class RequestStaggerer {
+		public static int STAGGER_TIME = 200;
+
 		private int m_CurrentWait = 0;
+		public int CurrentWait {
+			get { return m_CurrentWait; }
+			private set { m_CurrentWait = value; }
+		}
+
 		public int GetNextDelay() {
-			m_CurrentWait += 200;
-			return m_CurrentWait;
+			CurrentWait += STAGGER_TIME;
+			return CurrentWait;
 		}
 
 		public void Reset() {
-			m_CurrentWait = 0;
+			CurrentWait = 0;
 		}
 	}
 }

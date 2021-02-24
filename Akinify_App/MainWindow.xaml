@@ -65,7 +65,7 @@
                                 </Grid>
                             </Grid>
                             <Grid Grid.Row="1" Margin="0,5,0,0">
-                                <local:ArtistDisplayTable/>
+                                <local:ArtistDisplayTable DataContext="{Binding SearchQuery}"/>
                             </Grid>
                             <Grid Grid.Row="2" Grid.Column="1" Margin="0,5,0,0" VerticalAlignment="Center">
                                 <Grid.RowDefinitions>
@@ -114,7 +114,7 @@
                                 </Grid>
                             </Grid>
                             <Grid Grid.Row="1" Margin="0,5,0,0">
-                                <local:PlaylistDisplayTable/>
+                                <local:PlaylistDisplayTable DataContext="{Binding SearchQuery}"/>
                             </Grid>
                         </Grid>
                     </TabItem>
@@ -136,21 +136,7 @@
                     <ColumnDefinition Width="5*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="Playlist" Grid.Row="0" Grid.ColumnSpan="3" FontWeight="Bold"/>
-                <ListView Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{ Binding PlaylistTracks }" Margin="0,5,0,0">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Width="200" DisplayMemberBinding="{Binding Name}">
-                                <GridViewColumnHeader Content=" Name" Grid.Column="0" HorizontalContentAlignment="Left" />
-                            </GridViewColumn>
-                            <GridViewColumn Width="200" DisplayMemberBinding="{Binding Artists, Converter={ StaticResource ArtistListDisplayConverter }}">
-                                <GridViewColumnHeader Content=" Artist(s)" Grid.Column="1" HorizontalContentAlignment="Left" />
-                            </GridViewColumn>
-                            <GridViewColumn Width="200" DisplayMemberBinding="{Binding Album.Name}">
-                                <GridViewColumnHeader Content=" Album" Grid.Column="2" HorizontalContentAlignment="Left" />
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                <local:TrackDisplayTable Grid.Row="1" Grid.ColumnSpan="2" DataContext="{ Binding Playlist }" Margin="0,5,0,0"/>
                 <Grid Grid.Row="2" Grid.ColumnSpan="2" Height="auto" Margin="0,5">
                     <Grid Height="auto">
                         <Grid.RowDefinitions>
@@ -195,16 +181,20 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="auto"/>
+                                <RowDefinition Height="5"/>
+                                <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
 
                             <TextBlock Text="Playlist creation" Grid.Row="0" Grid.ColumnSpan="5" FontWeight="Bold" Margin="0,0,0,5"/>
-                            <TextBlock Text="Playlist size:" Grid.Row="1" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Center"/>
-                            <TextBox Grid.Row="1" Grid.Column="1" Margin="0,0,5,0" Text="{Binding PlaylistSize}"/>
-                            <TextBlock Text="Selection type:" Grid.Row="1" Grid.Column="2" Margin="10,0,5,0" VerticalAlignment="Center"/>
-                            <ComboBox Grid.Row="1" Grid.Column="3" Margin="0,0,5,0"
+                            <TextBlock Text="Name:" Grid.Row="1" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Margin="0,0,0,0" Text="{Binding Playlist.Name}"/>
+                            <TextBlock Text="Playlist size:" Grid.Row="3" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="3" Grid.Column="1" Margin="0,0,5,0" Text="{Binding PlaylistSize}"/>
+                            <TextBlock Text="Selection type:" Grid.Row="3" Grid.Column="2" Margin="10,0,5,0" VerticalAlignment="Center"/>
+                            <ComboBox Grid.Row="3" Grid.Column="3" Margin="0,0,5,0"
                                 ItemsSource="{Binding Source={ local:EnumBindingSource EnumType=local:SelectionType}}"
                                 SelectedValue ="{Binding CurrentSelectionType}"/>
-                            <Button Content="Create playlist" Grid.Row="1" Grid.Column="4" Click="CreatePlaylist_Click"/>
+                            <Button Content="Create playlist" Grid.Row="3" Grid.Column="4" Click="CreatePlaylist_Click"/>
                         </Grid>
                     </Grid>
                 </Grid>

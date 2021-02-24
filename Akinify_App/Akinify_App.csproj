@@ -108,12 +108,15 @@
       <DependentUpon>AuthenticationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="AuthenticationWindowVM.cs" />
+    <Compile Include="Controls\IDataTableContext.cs" />
+    <Compile Include="Controls\TrackDisplayTable.cs" />
     <Compile Include="Controls\PlaylistDisplayTable.cs" />
     <Compile Include="Controls\ArtistDisplayTable.cs" />
     <Compile Include="Controls\DataDisplayTable.xaml.cs">
       <DependentUpon>DataDisplayTable.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindowVM.cs" />
+    <Compile Include="Playlist\SpotifyPlaylistContext.cs" />
     <Compile Include="Playlist\SpotifyPlaylistSelector.cs" />
     <Compile Include="Playlist\SpotifyPlaylistSelectorMostPopular.cs" />
     <Compile Include="Playlist\SpotifyPlaylistSelectorRandom.cs" />
