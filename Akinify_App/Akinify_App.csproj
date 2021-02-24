@@ -116,7 +116,6 @@
       <DependentUpon>DataDisplayTable.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindowVM.cs" />
-    <Compile Include="Playlist\SpotifyPlaylistContext.cs" />
     <Compile Include="Playlist\SpotifyPlaylistSelector.cs" />
     <Compile Include="Playlist\SpotifyPlaylistSelectorMostPopular.cs" />
     <Compile Include="Playlist\SpotifyPlaylistSelectorRandom.cs" />

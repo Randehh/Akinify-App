@@ -16,7 +16,9 @@ namespace Akinify_App {
 		}
 
 		public void AddLine(string s) {
-			m_StringBuilder.Append("\n");
+			if (m_StringBuilder.Length != 0) {
+				m_StringBuilder.Append("\n");
+			}
 			m_StringBuilder.Append($"{GetTimeString()} - {s}");
 			OnUpdated(m_StringBuilder.ToString());
 		}

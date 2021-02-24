@@ -56,10 +56,10 @@
                                             <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="2*"/>
-                                            <ColumnDefinition Width="3*"/>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="Artist search:" Grid.Row="0" Grid.Column="0"/>
+                                        <TextBlock Text="Artist search:" Grid.Row="0" Grid.Column="0" Margin="0,0,5,0"/>
                                         <TextBox Grid.Row="0" Grid.Column="1" TextChanged="QueryTextBox_Update" />
                                     </Grid>
                                 </Grid>
@@ -72,10 +72,10 @@
                                     <RowDefinition Height="auto"/>
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*"/>
-                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="Search depth:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                                <TextBlock Text="Search depth:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,5,0"/>
                                 <ComboBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"
                                     ItemsSource="{Binding Source={ local:EnumBindingSource EnumType=local:SearchDepth}}"
                                     SelectedValue ="{Binding CurrentSearchDepth}"/>
@@ -105,10 +105,10 @@
                                             <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="2*"/>
-                                            <ColumnDefinition Width="3*"/>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="Playlist search:" Grid.Row="0" Grid.Column="0"/>
+                                        <TextBlock Text="Playlist search:" Grid.Row="0" Grid.Column="0" Margin="0,0,5,0"/>
                                         <TextBox Grid.Row="0" Grid.Column="1" TextChanged="QueryTextBox_Update" />
                                     </Grid>
                                 </Grid>
@@ -198,12 +198,12 @@
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Stretch">
+                <Grid Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Stretch" Background="Gainsboro">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Log" Grid.Row="0"  FontWeight="Bold" Margin="0,0,0,5"/>
+                    <TextBlock Text="Log" Grid.Row="0"  FontWeight="Bold" Margin="0,0,0,0"/>
                     <ScrollViewer x:Name="LogScrollViewer" Grid.Row="1">
                         <TextBlock Text="{Binding LogText}"/>
                     </ScrollViewer>
