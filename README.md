@@ -5,4 +5,4 @@ Essentially that means no bias is used for your personal listening habits, so it
 - You want to explore a new genre
 - You want to find more artists that are highly similar
 
-![Alt text](Images/Screenshot.JPG?raw=true "Screenshot")
+![Alt text](Images/Akinify.PNG?raw=true "Screenshot")
