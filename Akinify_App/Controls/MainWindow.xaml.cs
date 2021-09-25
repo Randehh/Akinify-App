@@ -1,24 +1,21 @@
 ﻿using SpotifyAPI.Web;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace Akinify_App {
 	public partial class MainWindow : Window {
-
-		private MainWindowVM m_ViewModel;
 		private AuthenticationWindow m_AuthenticationWindow;
 
 		public MainWindow() {
 			InitializeComponent();
-			m_ViewModel = new MainWindowVM(SearchProgressBar, SearchProgressBarText, LogScrollViewer);
-			DataContext = m_ViewModel;
+			DataContext = new MainWindowVM();
 		}
 
 		protected override void OnActivated(EventArgs e) {
 			base.OnActivated(e);
 
-			if (m_ViewModel.IsLoggedIn) return;
+			if (Endpoint.IsLoggedIn) return;
 
 			if (m_AuthenticationWindow == null) {
 				if (SpotifyAuthenticator.StartCached(OnLoggedIn)) {
@@ -37,30 +34,13 @@ namespace Akinify_App {
 		}
 
 		private void OnLoggedIn(SpotifyClient client) {
-			m_ViewModel.SetActiveClient(client);
+			Endpoint.Client = client;
+			Endpoint.UserProfile = Task.Run(() => client.UserProfile.Current()).Result;
+			Endpoint.OnLoggedIn();
 
 			if (m_AuthenticationWindow != null) {
 				Dispatcher.Invoke(m_AuthenticationWindow.Close);
 			}
-		}
-
-		private void QueryTextBox_Update(object sender, RoutedEventArgs e) {
-			m_ViewModel.SearchText = (sender as TextBox).Text;
-		}
-
-		private void UserTextBox_Update(object sender, RoutedEventArgs e) {
-			m_ViewModel.UserSearchText = (sender as TextBox).Text;
-		}
-
-		private void AddUser_Click(object sender, RoutedEventArgs e) {
-			m_ViewModel.SearchQuery.ConfirmSearchText();
-		}
-		private void GeneratePlaylist_Click(object sender, RoutedEventArgs e) {
-			m_ViewModel.SearchQuery.Search();
-		}
-
-		private void CreatePlaylist_Click(object sender, RoutedEventArgs e) {
-			m_ViewModel.CreatePlaylist();
 		}
     }
 }

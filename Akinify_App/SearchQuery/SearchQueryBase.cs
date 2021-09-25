@@ -7,7 +7,7 @@ namespace Akinify_App {
 
 	public partial class SearchQueryBase<T> : ISearchQuery, IDataTableContext<T> {
 
-		protected MainWindowVM m_ViewModel;
+		protected AffinityPlaylistGenerationVM m_ViewModel;
 
 		private ObservableCollection<T> m_Items = new ObservableCollection<T>();
 		public ObservableCollection<T> Items {
@@ -45,7 +45,7 @@ namespace Akinify_App {
 			}
 		}
 
-		public SearchQueryBase(MainWindowVM vm) {
+		public SearchQueryBase(AffinityPlaylistGenerationVM vm) {
 			m_ViewModel = vm;
 		}
 

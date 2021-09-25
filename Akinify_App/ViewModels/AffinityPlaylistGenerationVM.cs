@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace Akinify_App {
-	public class MainWindowVM : INotifyPropertyChanged {
+	public class AffinityPlaylistGenerationVM : INotifyPropertyChanged {
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		public EnumBindingSourceExtension SearchDepthEnumBindingSource { get; } = new EnumBindingSourceExtension(typeof(SearchDepth));
@@ -17,28 +17,11 @@ namespace Akinify_App {
 		/*
 		 * User functions
 		 */
-		private SpotifyClient m_CurrentUser = null;
-		public SpotifyClient CurrentUser {
-			get { return m_CurrentUser; }
-			set {
-				m_CurrentUser = value;
-				OnPropertyChanged(nameof(CurrentUser));
-				OnPropertyChanged(nameof(IsLoggedIn));
-			}
-		}
-
-		private PrivateUser m_CurrentUserProfile;
-		public PrivateUser CurrentUserProfile {
-			get { return m_CurrentUserProfile; }
-			set {
-				m_CurrentUserProfile = value;
-				OnPropertyChanged(nameof(CurrentUserProfile));
-				OnPropertyChanged(nameof(UserDisplayName));
-			}
-		}
+		public SpotifyClient CurrentUser => Endpoint.Client;
+		public PrivateUser CurrentUserProfile => Endpoint.UserProfile;
 
 		public string UserDisplayName => CurrentUserProfile != null ? $"Logged in as: {CurrentUserProfile.DisplayName}" : "Not logged in";
-		public bool IsLoggedIn => CurrentUser != null;
+		public bool IsLoggedIn => Endpoint.IsLoggedIn;
 
 		/*
 		 * Search query
@@ -173,7 +156,12 @@ namespace Akinify_App {
 			}
 		}
 
-		public MainWindowVM(ProgressBar searchProgressBar, TextBlock searchProgressText, ScrollViewer logScrollViewer) {
+		public AffinityPlaylistGenerationVM(ProgressBar searchProgressBar, TextBlock searchProgressText, ScrollViewer logScrollViewer) {
+			Endpoint.OnLoggedIn += () => {
+				OnPropertyChanged(nameof(CurrentUser));
+				OnPropertyChanged(nameof(CurrentUserProfile));
+				OnPropertyChanged(nameof(IsLoggedIn));
+			};
 			m_LogScrollViewer = logScrollViewer;
 			VisualLogger = new VisualLogger();
 			VisualLogger.OnUpdated += (logText) => { LogText = logText; };
@@ -187,9 +175,6 @@ namespace Akinify_App {
 			});
 
 			UpdateSearchQuery(SearchQueryType.Artist);
-
-			//GET /repos/:owner/:repo/releases
-
 		}
 
 		public void UpdatePlaylistStats() {
@@ -221,13 +206,6 @@ namespace Akinify_App {
 		/*
 		 * Spotify API calls
 		 */
-		public async void SetActiveClient(SpotifyClient client) {
-			VisualLogger.AddLine("Succesfully logged in, requesting user profile...");
-			CurrentUser = client;
-			CurrentUserProfile = await client.UserProfile.Current();
-			VisualLogger.AddLine("User profile received.");
-		}
-
 		public async void CreatePlaylist() {
 			VisualLogger.AddLine($"Creating playlist with {PlaylistSize} tracks...");
 			PlaylistCreateRequest request = new PlaylistCreateRequest(Playlist.Name);

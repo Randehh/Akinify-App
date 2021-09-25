@@ -65,6 +65,9 @@
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Akinify_App.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EmbedIO, Version=3.4.3.0, Culture=neutral, PublicKeyToken=5e5f048b6e04267e, processorArchitecture=MSIL">
       <HintPath>packages\EmbedIO.3.4.3\lib\netstandard2.0\EmbedIO.dll</HintPath>
@@ -104,10 +107,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AuthenticationWindow.xaml.cs">
+    <Compile Include="Controls\AuthenticationWindow.xaml.cs">
       <DependentUpon>AuthenticationWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AuthenticationWindowVM.cs" />
+    <Compile Include="Utilities\Endpoint.cs" />
+    <Compile Include="ViewModels\MainWindowVM.cs" />
+    <Compile Include="ViewModels\AuthenticationWindowVM.cs" />
+    <Compile Include="Controls\AffinityPlaylistGeneration.xaml.cs">
+      <DependentUpon>AffinityPlaylistGeneration.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UserDisplayTable.cs" />
     <Compile Include="Controls\IDataTableContext.cs" />
     <Compile Include="Controls\TrackDisplayTable.cs" />
@@ -116,7 +124,7 @@
     <Compile Include="Controls\DataDisplayTable.xaml.cs">
       <DependentUpon>DataDisplayTable.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindowVM.cs" />
+    <Compile Include="ViewModels\AffinityPlaylistGenerationVM.cs" />
     <Compile Include="Playlist\SpotifyPlaylistSelector.cs" />
     <Compile Include="Playlist\SpotifyPlaylistSelectorMostPopular.cs" />
     <Compile Include="Playlist\SpotifyPlaylistSelectorRandom.cs" />
@@ -134,7 +142,11 @@
     <Compile Include="Utilities\ArtistListDisplayConverter.cs" />
     <Compile Include="Utilities\EnumBindingSourceExtension.cs" />
     <Compile Include="Utilities\VisualLogger.cs" />
-    <Page Include="AuthenticationWindow.xaml">
+    <Page Include="Controls\AuthenticationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\AffinityPlaylistGeneration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -142,7 +154,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Controls\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -150,7 +162,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Controls\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>

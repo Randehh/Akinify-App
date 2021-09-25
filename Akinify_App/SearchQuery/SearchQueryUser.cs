@@ -13,7 +13,7 @@ namespace Akinify_App {
 
 		private Dictionary<string, PublicUser> m_AllUsers = new Dictionary<string, PublicUser>();
 
-		public SearchQueryUser(MainWindowVM vm) : base(vm) {
+		public SearchQueryUser(AffinityPlaylistGenerationVM vm) : base(vm) {
 
 		}
 

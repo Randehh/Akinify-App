@@ -7,7 +7,7 @@ namespace Akinify_App {
 
 	public partial class SearchQueryArtistBase<T> : SearchQueryBase<T>{
 		
-		public SearchQueryArtistBase(MainWindowVM vm) : base(vm){
+		public SearchQueryArtistBase(AffinityPlaylistGenerationVM vm) : base(vm){
 
 		}
 

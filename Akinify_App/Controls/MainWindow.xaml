@@ -1,0 +1,24 @@
+﻿<Window x:Class="Akinify_App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Akinify_App"
+        mc:Ignorable="d"
+        Title="Akinify" Height="auto" Width="auto" MinHeight="500" MinWidth="700">
+    <Window.Resources>
+        <local:ArtistListDisplayConverter x:Key="ArtistListDisplayConverter"/>
+    </Window.Resources>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="auto"/>
+		</Grid.RowDefinitions>
+
+		<local:AffinityPlaylistGeneration Grid.Row="0" Margin="10,10,10,0"/>
+
+		<TextBlock Text="{Binding UserDisplayName}" Grid.Row="1" Margin="0,5,0,0" Padding="5"
+                       VerticalAlignment="Top"
+                       FontStyle="Italic" Background="Gainsboro"/>
+    </Grid>
+</Window>

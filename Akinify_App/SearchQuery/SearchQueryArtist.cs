@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Akinify_App {
 	public class SearchQueryArtist : SearchQueryArtistBase<FullArtist> {
-		public SearchQueryArtist(MainWindowVM vm) : base(vm) {
+		public SearchQueryArtist(AffinityPlaylistGenerationVM vm) : base(vm) {
 
 		}
 
