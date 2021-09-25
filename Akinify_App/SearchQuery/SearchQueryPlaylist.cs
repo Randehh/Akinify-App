@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace Akinify_App {
-	public class SearchQueryPlaylist : SearchQueryBase<SimplePlaylist> {
+	public class SearchQueryPlaylist : SearchQueryArtistBase<SimplePlaylist> {
 		public SearchQueryPlaylist(MainWindowVM vm) : base(vm) {
 		}
 

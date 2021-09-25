@@ -118,7 +118,46 @@
                             </Grid>
                         </Grid>
                     </TabItem>
-                </TabControl>
+					<TabItem Header="Group blend" IsSelected="{Binding IsSearchQueryBlend}" Height="20" VerticalAlignment="Top">
+						<Grid Grid.Row="1" Margin="5">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="auto"/>
+								<RowDefinition Height="*"/>
+								<RowDefinition Height="auto"/>
+							</Grid.RowDefinitions>
+							<Grid Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="auto"/>
+								</Grid.RowDefinitions>
+
+								<Grid Grid.Row="0">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*"/>
+									</Grid.ColumnDefinitions>
+									<Grid Grid.Column="0" Grid.Row="1">
+										<Grid.RowDefinitions>
+											<RowDefinition Height="auto"/>
+										</Grid.RowDefinitions>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="auto"/>
+											<ColumnDefinition Width="*"/>
+											<ColumnDefinition Width="50"/>
+										</Grid.ColumnDefinitions>
+										<TextBlock Text="Add user:" Grid.Row="0" Grid.Column="0" Margin="0,0,5,0"/>
+										<TextBox Grid.Row="0" Grid.Column="1" TextChanged="UserTextBox_Update" />
+										<Button Grid.Row="0" Grid.Column="2" Content="Add" Click="AddUser_Click" Margin="5,0,0,0"/>
+									</Grid>
+								</Grid>
+							</Grid>
+							<Grid Grid.Row="1" Margin="0,5,0,0">
+								<local:UserDisplayTable DataContext="{Binding SearchQuery}"/>
+							</Grid>
+						</Grid>
+					</TabItem>
+				</TabControl>
                 <Button Grid.Row="2" Content="Generate" Click="GeneratePlaylist_Click" IsEnabled="{Binding SearchQuery.CanGeneratePlaylist}" Margin="0,5,0,0" />
             </Grid>
             <Grid Grid.Column="1" Grid.Row="0" Margin="9,4" Background="#FFC9C9C9">

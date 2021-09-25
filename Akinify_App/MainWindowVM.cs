@@ -81,6 +81,28 @@ namespace Akinify_App {
 			}
 		}
 
+		public bool IsSearchQueryBlend {
+			get {
+				return m_CurrentSearchType == SearchQueryType.Blend;
+			}
+			set {
+				if (value == true) {
+					UpdateSearchQuery(SearchQueryType.Blend);
+				}
+				OnPropertyChanged(nameof(IsSearchQueryBlend));
+			}
+		}
+
+		public string UserSearchText {
+			set {
+				SearchQuery.SearchText = value;
+				OnPropertyChanged(nameof(UserSearchText));
+			}
+			get {
+				return SearchQuery.SearchText;
+			}
+		}
+
 		/*
 		 * Depth
 		 */
@@ -165,6 +187,9 @@ namespace Akinify_App {
 			});
 
 			UpdateSearchQuery(SearchQueryType.Artist);
+
+			//GET /repos/:owner/:repo/releases
+
 		}
 
 		public void UpdatePlaylistStats() {
@@ -182,6 +207,10 @@ namespace Akinify_App {
 
 					case SearchQueryType.Playlist:
 						m_SearchQueries.Add(queryType, new SearchQueryPlaylist(this));
+						break;
+
+					case SearchQueryType.Blend:
+						m_SearchQueries.Add(queryType, new SearchQueryUser(this));
 						break;
 				}
 			}
@@ -202,7 +231,7 @@ namespace Akinify_App {
 		public async void CreatePlaylist() {
 			VisualLogger.AddLine($"Creating playlist with {PlaylistSize} tracks...");
 			PlaylistCreateRequest request = new PlaylistCreateRequest(Playlist.Name);
-			request.Description = "Created via Akinify.";
+			request.Description = Playlist.Description;
 			FullPlaylist playlist = await CurrentUser.Playlists.Create(CurrentUserProfile.Id, request);
 			List<List<string>> trackUriBatches = Playlist.SelectTracks(PlaylistSize, CurrentSelectionType);
 			foreach (List<string> trackUris in trackUriBatches) {
@@ -230,6 +259,7 @@ namespace Akinify_App {
 
 	public enum SearchQueryType {
 		Artist,
-		Playlist
+		Playlist,
+		Blend
 	}
 }

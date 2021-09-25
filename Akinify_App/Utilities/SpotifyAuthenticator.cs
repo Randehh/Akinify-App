@@ -15,7 +15,7 @@ namespace Akinify_App {
 		private static EmbedIOAuthServer m_AuthServer;
 
 		private static string m_TokenPath = "token.json";
-		private static string m_ClientId = "YOUR_ID_HERE";
+		private static string m_ClientId = "2bd4f113bcaf4e3f84b7c7fdf65ed706";
 
 		public static bool StartCached(Action<SpotifyClient> onComplete) {
 			if (!File.Exists(m_TokenPath)) {

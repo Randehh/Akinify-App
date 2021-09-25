@@ -11,6 +11,7 @@ namespace Akinify_App {
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		public string Name { get; set; } = "New playlist";
+		public string Description { get; set; } = "Created via Akinify.";
 
 		private Action m_OnUpdate;
 		private List<FullTrack> m_Tracks = new List<FullTrack>();

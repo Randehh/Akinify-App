@@ -50,10 +50,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>72DC0BB3C919EA83E99A42ABF042D1FA397D4A65</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>5B24F7366E3781ACFAB4F1CC07BC0F0AD121912C</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>Akinify_App_TemporaryKey.pfx</ManifestKeyFile>
@@ -69,14 +69,14 @@
     <Reference Include="EmbedIO, Version=3.4.3.0, Culture=neutral, PublicKeyToken=5e5f048b6e04267e, processorArchitecture=MSIL">
       <HintPath>packages\EmbedIO.3.4.3\lib\netstandard2.0\EmbedIO.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SpotifyAPI.Web, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SpotifyAPI.Web.6.0.0\lib\netstandard2.0\SpotifyAPI.Web.dll</HintPath>
+      <HintPath>packages\SpotifyAPI.Web.6.2.1\lib\netstandard2.0\SpotifyAPI.Web.dll</HintPath>
     </Reference>
     <Reference Include="SpotifyAPI.Web.Auth, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SpotifyAPI.Web.Auth.6.0.0\lib\netstandard2.0\SpotifyAPI.Web.Auth.dll</HintPath>
+      <HintPath>packages\SpotifyAPI.Web.Auth.6.2.1\lib\netstandard2.0\SpotifyAPI.Web.Auth.dll</HintPath>
     </Reference>
     <Reference Include="Swan.Lite, Version=3.0.0.0, Culture=neutral, PublicKeyToken=30c707c872729fff, processorArchitecture=MSIL">
       <HintPath>packages\Unosquare.Swan.Lite.3.0.0\lib\net461\Swan.Lite.dll</HintPath>
@@ -108,6 +108,7 @@
       <DependentUpon>AuthenticationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="AuthenticationWindowVM.cs" />
+    <Compile Include="Controls\UserDisplayTable.cs" />
     <Compile Include="Controls\IDataTableContext.cs" />
     <Compile Include="Controls\TrackDisplayTable.cs" />
     <Compile Include="Controls\PlaylistDisplayTable.cs" />
@@ -120,6 +121,8 @@
     <Compile Include="Playlist\SpotifyPlaylistSelectorMostPopular.cs" />
     <Compile Include="Playlist\SpotifyPlaylistSelectorRandom.cs" />
     <Compile Include="SearchQuery\ISearchQuery.cs" />
+    <Compile Include="SearchQuery\SearchQueryArtistBase.cs" />
+    <Compile Include="SearchQuery\SearchQueryUser.cs" />
     <Compile Include="SearchQuery\SearchQueryBase.cs" />
     <Compile Include="SearchQuery\SearchQueryPlaylist.cs" />
     <Compile Include="SearchQuery\SearchQueryArtist.cs" />
@@ -170,6 +173,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Akinify_App_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -48,6 +48,13 @@ namespace Akinify_App {
 			m_ViewModel.SearchText = (sender as TextBox).Text;
 		}
 
+		private void UserTextBox_Update(object sender, RoutedEventArgs e) {
+			m_ViewModel.UserSearchText = (sender as TextBox).Text;
+		}
+
+		private void AddUser_Click(object sender, RoutedEventArgs e) {
+			m_ViewModel.SearchQuery.ConfirmSearchText();
+		}
 		private void GeneratePlaylist_Click(object sender, RoutedEventArgs e) {
 			m_ViewModel.SearchQuery.Search();
 		}
