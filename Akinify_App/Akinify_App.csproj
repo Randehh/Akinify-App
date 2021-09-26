@@ -107,10 +107,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\BlendPlaylistGeneration.xaml.cs">
+      <DependentUpon>BlendPlaylistGeneration.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\AuthenticationWindow.xaml.cs">
       <DependentUpon>AuthenticationWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\BlendDisplayTable.cs" />
+    <Compile Include="Utilities\StringListDisplayConverter.cs" />
+    <Compile Include="Utilities\BlendPlaylistManager.cs" />
     <Compile Include="Utilities\Endpoint.cs" />
+    <Compile Include="Utilities\FileUtilities.cs" />
+    <Compile Include="ViewModels\BaseGenerationVM.cs" />
+    <Compile Include="ViewModels\BlendPlaylistGenerationVM.cs" />
+    <Compile Include="ViewModels\BaseVM.cs" />
     <Compile Include="ViewModels\MainWindowVM.cs" />
     <Compile Include="ViewModels\AuthenticationWindowVM.cs" />
     <Compile Include="Controls\AffinityPlaylistGeneration.xaml.cs">
@@ -142,6 +152,10 @@
     <Compile Include="Utilities\ArtistListDisplayConverter.cs" />
     <Compile Include="Utilities\EnumBindingSourceExtension.cs" />
     <Compile Include="Utilities\VisualLogger.cs" />
+    <Page Include="Controls\BlendPlaylistGeneration.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\AuthenticationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

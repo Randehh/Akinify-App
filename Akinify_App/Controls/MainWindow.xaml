@@ -15,7 +15,15 @@
 			<RowDefinition Height="auto"/>
 		</Grid.RowDefinitions>
 
-		<local:AffinityPlaylistGeneration Grid.Row="0" Margin="10,10,10,0"/>
+		<TabControl Grid.Row="0">
+			<TabItem Header="Affinity search">
+				<local:AffinityPlaylistGeneration Grid.Row="0" Margin="5"/>
+			</TabItem>
+			<TabItem Header="Blend creation">
+				<local:BlendPlaylistGeneration Grid.Row="0" Margin="5"/>
+			</TabItem>
+		</TabControl>
+		
 
 		<TextBlock Text="{Binding UserDisplayName}" Grid.Row="1" Margin="0,5,0,0" Padding="5"
                        VerticalAlignment="Top"

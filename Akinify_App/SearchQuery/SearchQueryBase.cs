@@ -5,9 +5,9 @@ using System.Runtime.CompilerServices;
 
 namespace Akinify_App {
 
-	public partial class SearchQueryBase<T> : ISearchQuery, IDataTableContext<T> {
+	public partial class SearchQueryBase<T, T2> : ISearchQuery, IDataTableContext<T> where T2 : BaseGenerationVM {
 
-		protected AffinityPlaylistGenerationVM m_ViewModel;
+		protected T2 m_ViewModel;
 
 		private ObservableCollection<T> m_Items = new ObservableCollection<T>();
 		public ObservableCollection<T> Items {
@@ -45,7 +45,7 @@ namespace Akinify_App {
 			}
 		}
 
-		public SearchQueryBase(AffinityPlaylistGenerationVM vm) {
+		public SearchQueryBase(T2 vm) {
 			m_ViewModel = vm;
 		}
 

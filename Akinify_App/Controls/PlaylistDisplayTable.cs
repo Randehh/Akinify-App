@@ -3,7 +3,7 @@
 
 		public PlaylistDisplayTable() : base() {
 			CreateNewColumn("Playlist name", "Name");
-			CreateNewColumn("Author", "Owner.DisplayName");
+			CreateNewColumn("Author", "UserIds");
 		}
 	}
 }

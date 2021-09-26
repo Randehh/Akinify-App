@@ -3,9 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Akinify_App {
-	public class MainWindowVM : INotifyPropertyChanged {
-
-		public event PropertyChangedEventHandler PropertyChanged;
+	public class MainWindowVM : BaseVM {
 		/*
 		 * User functions
 		 */
@@ -18,11 +16,6 @@ namespace Akinify_App {
 				OnPropertyChanged(nameof(CurrentUserProfile));
 				OnPropertyChanged(nameof(UserDisplayName));
 			};
-		}
-
-		
-		public void OnPropertyChanged([CallerMemberName] string name = null) {
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 		}
 	}
 }

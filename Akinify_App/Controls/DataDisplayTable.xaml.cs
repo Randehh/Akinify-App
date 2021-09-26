@@ -11,26 +11,12 @@ namespace Akinify_App
             InitializeComponent();
         }
 
-		protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo) {
-			base.OnRenderSizeChanged(sizeInfo);
-            ResizeColumns();
-        }
-
         protected void CreateNewColumn(string name, string path, IValueConverter valueConverter = null) {
-            GridViewColumn column = new GridViewColumn();
+            DataGridTextColumn column = new DataGridTextColumn();
             column.Header = name;
-            column.DisplayMemberBinding = new Binding(path) { Converter = valueConverter };
-            GridViewEntries.Columns.Add(column);
-        }
-
-        protected void ResizeColumns() {
-            GridViewColumnCollection columns = GridViewEntries.Columns;
-            int count = columns.Count;
-            int gridWidth = (int)(ListViewParent.ActualWidth);
-            int columnWidth = gridWidth / count;
-            foreach(GridViewColumn column in GridViewEntries.Columns) {
-                column.Width = columnWidth;
-			}
+            column.Binding = new Binding(path) { Converter = valueConverter };
+            column.Width = new DataGridLength(10, DataGridLengthUnitType.Star);
+            ListViewParent.Columns.Add(column);
         }
     }
 }

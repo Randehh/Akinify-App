@@ -1,12 +1,8 @@
-﻿using Newtonsoft.Json;
-using SpotifyAPI.Web;
+﻿using SpotifyAPI.Web;
 using SpotifyAPI.Web.Auth;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace Akinify_App {
 	class SpotifyAuthenticator {
@@ -14,19 +10,17 @@ namespace Akinify_App {
 		private static readonly Uri m_CallbackUri = new Uri("http://localhost:5000/callback");
 		private static EmbedIOAuthServer m_AuthServer;
 
-		private static string m_TokenPath = "token.json";
+		private static string m_TokenPath = "token";
 		private static string m_ClientId = "2bd4f113bcaf4e3f84b7c7fdf65ed706";
 
 		public static bool StartCached(Action<SpotifyClient> onComplete) {
-			if (!File.Exists(m_TokenPath)) {
+			PKCETokenResponse token = FileUtilities.LoadJson<PKCETokenResponse>(m_TokenPath);
+			if(token == null) {
 				return false;
 			}
 
-			string json = File.ReadAllText(m_TokenPath);
-			PKCETokenResponse token = JsonConvert.DeserializeObject<PKCETokenResponse>(json);
-
 			PKCEAuthenticator authenticator = new PKCEAuthenticator(m_ClientId, token);
-            authenticator.TokenRefreshed += (sender, refreshedToken) => File.WriteAllText(m_TokenPath, JsonConvert.SerializeObject(refreshedToken));
+            authenticator.TokenRefreshed += (sender, refreshedToken) => FileUtilities.SaveJson(m_TokenPath, refreshedToken);
 
 			SpotifyClientConfig config = SpotifyClientConfig.CreateDefault().WithAuthenticator(authenticator);
 			SpotifyClient client = new SpotifyClient(config);
@@ -48,7 +42,7 @@ namespace Akinify_App {
                   new PKCETokenRequest(m_ClientId, response.Code, m_AuthServer.BaseUri, verifier)
                 );
 
-                File.WriteAllText(m_TokenPath, JsonConvert.SerializeObject(token));
+				FileUtilities.SaveJson(m_TokenPath, token);
 				StartCached(onComplete);
 			};
 

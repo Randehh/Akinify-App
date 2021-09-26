@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace Akinify_App {
-	public class SearchQueryArtist : SearchQueryArtistBase<FullArtist> {
+	public class SearchQueryArtist : SearchQueryArtistBase<FullArtist, AffinityPlaylistGenerationVM> {
 		public SearchQueryArtist(AffinityPlaylistGenerationVM vm) : base(vm) {
 
 		}

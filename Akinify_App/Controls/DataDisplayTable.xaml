@@ -13,12 +13,11 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <ListView x:Name="ListViewParent"
-                Grid.Row="2" Grid.ColumnSpan="2" 
+		<DataGrid x:Name="ListViewParent"
+                Grid.Row="2" Grid.ColumnSpan="2"
+				AutoGenerateColumns="False"
+				IsReadOnly="True"
                 ItemsSource="{ Binding Items }" SelectedItem="{Binding SelectedItem}" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
-            <ListView.View>
-                <GridView x:Name="GridViewEntries" ColumnHeaderContainerStyle="{StaticResource ColumnHeaderStyle}"/>
-            </ListView.View>
-        </ListView>
+		</DataGrid>
     </Grid>
 </UserControl>

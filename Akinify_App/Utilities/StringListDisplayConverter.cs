@@ -1,5 +1,4 @@
-﻿using SpotifyAPI.Web;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -8,15 +7,15 @@ using System.Windows.Data;
 namespace Akinify_App {
 
 	[ValueConversion(typeof(string), typeof(string))]
-	public class ArtistListDisplayConverter : IValueConverter {
-        public ArtistListDisplayConverter() { }
+	public class StringListDisplayConverter : IValueConverter {
+        public StringListDisplayConverter() { }
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-			List<SimpleArtist> artists = value as List<SimpleArtist>;
+			List<string> entry = value as List<string>;
 			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < artists.Count; i++) {
+			for (int i = 0; i < entry.Count; i++) {
 				if (i != 0) sb.Append(", ");
-				sb.Append(artists[i].Name);
+				sb.Append(entry[i]);
 			}
 			return sb.ToString();
 		}

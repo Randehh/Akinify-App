@@ -7,12 +7,8 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace Akinify_App {
-	public class AffinityPlaylistGenerationVM : INotifyPropertyChanged {
-
-		public event PropertyChangedEventHandler PropertyChanged;
+	public class AffinityPlaylistGenerationVM : BaseGenerationVM {
 		public EnumBindingSourceExtension SearchDepthEnumBindingSource { get; } = new EnumBindingSourceExtension(typeof(SearchDepth));
-		public RequestStaggerer RequestStaggerer { get; set; } = new RequestStaggerer();
-		public ProgressBarWrapper SearchProgressBar { get; private set; }
 
 		/*
 		 * User functions
@@ -64,18 +60,6 @@ namespace Akinify_App {
 			}
 		}
 
-		public bool IsSearchQueryBlend {
-			get {
-				return m_CurrentSearchType == SearchQueryType.Blend;
-			}
-			set {
-				if (value == true) {
-					UpdateSearchQuery(SearchQueryType.Blend);
-				}
-				OnPropertyChanged(nameof(IsSearchQueryBlend));
-			}
-		}
-
 		public string UserSearchText {
 			set {
 				SearchQuery.SearchText = value;
@@ -101,26 +85,6 @@ namespace Akinify_App {
 		/*
 		 * Playlist
 		 */
-		private SpotifyPlaylist m_Playlist;
-		public SpotifyPlaylist Playlist {
-			get { return m_Playlist; }
-			set {
-				m_Playlist = value;
-				OnPropertyChanged(nameof(Playlist));
-				OnPropertyChanged(nameof(PlaylistTracks));
-			}
-		}
-
-		public ObservableCollection<FullTrack> PlaylistTracks {
-			get {
-				if(Playlist == null) {
-					return new ObservableCollection<FullTrack>();
-				} else {
-					return new ObservableCollection<FullTrack>(Playlist.Items);
-				}
-			}
-		}
-
 		public int m_PlaylistSize = 100;
 		public int PlaylistSize {
 			get { return m_PlaylistSize; }
@@ -136,23 +100,6 @@ namespace Akinify_App {
 			set {
 				m_CurrentSelectionType = value;
 				OnPropertyChanged(nameof(CurrentSelectionType));
-			}
-		}
-
-		/*
-		 * Logger
-		 */
-		public VisualLogger VisualLogger { get; private set; }
-		private ScrollViewer m_LogScrollViewer;
-		private string m_LogText = "";
-		public string LogText {
-			get {
-				return m_LogText;
-			}
-			set {
-				m_LogText = value;
-				OnPropertyChanged(nameof(LogText));
-				m_LogScrollViewer.Dispatcher.Invoke(m_LogScrollViewer.ScrollToBottom);
 			}
 		}
 
@@ -177,10 +124,6 @@ namespace Akinify_App {
 			UpdateSearchQuery(SearchQueryType.Artist);
 		}
 
-		public void UpdatePlaylistStats() {
-			OnPropertyChanged(nameof(Playlist));
-		}
-
 		public void UpdateSearchQuery(SearchQueryType queryType) {
 			m_CurrentSearchType = queryType;
 
@@ -192,10 +135,6 @@ namespace Akinify_App {
 
 					case SearchQueryType.Playlist:
 						m_SearchQueries.Add(queryType, new SearchQueryPlaylist(this));
-						break;
-
-					case SearchQueryType.Blend:
-						m_SearchQueries.Add(queryType, new SearchQueryUser(this));
 						break;
 				}
 			}
@@ -218,10 +157,6 @@ namespace Akinify_App {
 			}
 			VisualLogger.AddLine($"Playlist created: {Playlist.Name}");
 		}
-
-		public void OnPropertyChanged([CallerMemberName] string name = null) {
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-		}
 	}
 
 	public enum SearchDepth {
@@ -237,7 +172,6 @@ namespace Akinify_App {
 
 	public enum SearchQueryType {
 		Artist,
-		Playlist,
-		Blend
+		Playlist
 	}
 }
