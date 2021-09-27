@@ -32,7 +32,7 @@ namespace Akinify_App {
 		public TextInputDialogVM(string headerText, string description, Func<string, bool> prerequisite = null) {
 			HeaderText = headerText;
 			Description = description;
-			ConfirmCommand = new SimpleCommand(() => {
+			ConfirmCommand = new SimpleCommand((_) => {
 				m_TextInputSuccesful = true;
 				OnRequestClose();
 			},

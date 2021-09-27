@@ -3,10 +3,10 @@ using System.Windows.Input;
 
 namespace Akinify_App {
 	public class SimpleCommand : ICommand {
-		private Action m_OnExecute;
+		private Action<object> m_OnExecute;
 		private Func<bool> m_CanExecute;
 
-		public SimpleCommand(Action onExecute, Func<bool> canExecute = null) {
+		public SimpleCommand(Action<object> onExecute, Func<bool> canExecute = null) {
 			m_OnExecute = onExecute;
 			m_CanExecute = canExecute != null ? canExecute : () => { return true; };
 		}
@@ -21,7 +21,7 @@ namespace Akinify_App {
 		}
 
 		public void Execute(object parameter) {
-			m_OnExecute();
+			m_OnExecute(parameter);
 		}
 	}
 }

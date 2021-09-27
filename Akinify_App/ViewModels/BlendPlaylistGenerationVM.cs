@@ -5,7 +5,6 @@ using System.Windows.Controls;
 
 namespace Akinify_App {
 	public class BlendPlaylistGenerationVM : BaseGenerationVM {
-		public EnumBindingSourceExtension SearchDepthEnumBindingSource { get; } = new EnumBindingSourceExtension(typeof(SearchDepth));
 		public bool IsLoggedIn => Endpoint.IsLoggedIn;
 
 		public SimpleCommand OnGenerateBlendCommand { get; set; }
@@ -61,11 +60,9 @@ namespace Akinify_App {
 			BlendGroupEditor.Show(BlendPlaylistManager);
 		}
 
-		private async void GeneratePlaylist() {
+		private async void GeneratePlaylist(object o) {
 			BlendPlaylistGenerator generator = new BlendPlaylistGenerator(this);
-			//Task.Run(async () => {
-				await generator.UpdatePlaylist(BlendPlaylistManager.SelectedItem.GeneratedPlaylistId, BlendPlaylistManager.SelectedItem.Users.Select((user) => user.PlaylistId).ToArray());
-			//});
+			await generator.UpdatePlaylist(BlendPlaylistManager.SelectedItem.GeneratedPlaylistId, BlendPlaylistManager.SelectedItem.Users.Select((user) => user.PlaylistId).ToArray());
 		}
 	}
 }

@@ -17,6 +17,7 @@
                 Grid.Row="2" Grid.ColumnSpan="2"
 				AutoGenerateColumns="False"
 				IsReadOnly="True"
+				CanUserResizeRows="False"
                 ItemsSource="{ Binding Items }" SelectedItem="{Binding SelectedItem}" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
 		</DataGrid>
     </Grid>

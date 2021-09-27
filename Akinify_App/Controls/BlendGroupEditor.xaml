@@ -19,7 +19,7 @@
 
 				<TextBlock Text="{Binding UserId}" Grid.Column="0"/>
 				<ComboBox Grid.Column="1" ItemsSource="{Binding Playlists}" SelectedValue="{Binding PlaylistId}" SelectedValuePath="Id" DisplayMemberPath="DisplayName"/>
-				<Button Content="Remove" Grid.Column="2"/>
+				<Button Content="Remove" Grid.Column="2" Command="{Binding DataContext.RemoveUserCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" CommandParameter="{Binding}"/>
 			</Grid>
 		</DataTemplate>
 	</Window.Resources>

@@ -19,6 +19,7 @@ namespace Akinify_App {
 		public SimpleCommand RemoveSelectedBlendCommand { get; private set; }
 		public SimpleCommand AddNewUserCommand { get; private set; }
 		public SimpleCommand SaveCommand { get; private set; }
+		public SimpleCommand RemoveUserCommand { get; private set; }
 
 		public BlendGroupEditorVM(BlendPlaylistManager manager) {
 			BlendPlaylistManager = manager;
@@ -27,7 +28,8 @@ namespace Akinify_App {
 			CreateNewBlendCommand = new SimpleCommand(CreateNewBlendGroup);
 			RemoveSelectedBlendCommand = new SimpleCommand(DeleteSelectedBlendGroup, () => BlendPlaylistManager.HasItemSelected);
 			AddNewUserCommand = new SimpleCommand(AddNewUserToBlendGroup, () => BlendPlaylistManager.HasItemSelected);
-			SaveCommand = new SimpleCommand(BlendPlaylistManager.Save);
+			SaveCommand = new SimpleCommand((_) => BlendPlaylistManager.Save());
+			RemoveUserCommand = new SimpleCommand(RemoveUserFromBlend);
 		}
 
 		~BlendGroupEditorVM() {
@@ -38,7 +40,7 @@ namespace Akinify_App {
 			OnPropertyChanged(nameof(BlendPlaylistManager));
 		}
 
-		private void CreateNewBlendGroup() {
+		private void CreateNewBlendGroup(object o) {
 			string result = TextInputDialog.DisplayDialog("New blend group", "Enter new blend group name");
 			if (string.IsNullOrWhiteSpace(result)) return;
 
@@ -52,12 +54,12 @@ namespace Akinify_App {
 			});
 		}
 
-		private void DeleteSelectedBlendGroup() {
+		private void DeleteSelectedBlendGroup(object o) {
 			BlendPlaylistManager.BlendGroups.Remove(BlendPlaylistManager.SelectedItem);
 			BlendPlaylistManager.Save();
 		}
 
-		private void AddNewUserToBlendGroup() {
+		private void AddNewUserToBlendGroup(object o) {
 			string result = TextInputDialog.DisplayDialog("Add new user", "Enter the username or profile link (in Spotify: Copy link to profile)");
 			if (string.IsNullOrWhiteSpace(result)) return;
 
@@ -75,6 +77,10 @@ namespace Akinify_App {
 					});
 				} catch { }
 			});
+		}
+
+		private void RemoveUserFromBlend(object o) {
+			BlendPlaylistManager.SelectedItem.Users.Remove(o as BlendPlaylistUser);
 		}
 
 		public async Task<FullPlaylist> CreatePlaylist(string name) {
