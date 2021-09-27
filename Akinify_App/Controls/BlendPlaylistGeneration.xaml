@@ -19,65 +19,16 @@
 					<RowDefinition Height="auto"/>
 					<RowDefinition Height="*"/>
 					<RowDefinition Height="auto"/>
+					<RowDefinition Height="auto"/>
+					<RowDefinition Height="auto"/>
 				</Grid.RowDefinitions>
-				<Grid Grid.Row="0" Margin="0,0,0,5">
-					<TextBlock Text="Create blend..." Grid.Row="0" Grid.ColumnSpan="3" FontWeight="Bold"/>
-				</Grid>
-				<Grid Grid.Row="1" Margin="5">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*"/>
-					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="auto"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="auto"/>
-						<RowDefinition Height="auto"/>
-						<RowDefinition Height="*"/>
-					</Grid.RowDefinitions>
-					<Grid Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="auto"/>
-						</Grid.RowDefinitions>
 
-						<Grid Grid.Row="0">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*"/>
-							</Grid.ColumnDefinitions>
-							<Grid Grid.Column="0" Grid.Row="1">
-								<Grid.RowDefinitions>
-									<RowDefinition Height="auto"/>
-								</Grid.RowDefinitions>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="auto"/>
-									<ColumnDefinition Width="*"/>
-									<ColumnDefinition Width="50"/>
-								</Grid.ColumnDefinitions>
-								<TextBlock Text="Add user:" Grid.Row="0" Grid.Column="0" Margin="0,0,5,0"/>
-								<TextBox Grid.Row="0" Grid.Column="1" TextChanged="UserTextBox_Update" />
-								<Button Grid.Row="0" Grid.Column="2" Content="Add" Click="AddUser_Click" Margin="5,0,0,0"/>
-							</Grid>
-						</Grid>
-					</Grid>
-					<Grid Grid.Row="1" Margin="0,5,0,0">
-						<local:UserDisplayTable DataContext="{Binding SearchQuery}"/>
-					</Grid>
-					<Grid Grid.Row="2" Margin="0,5,0,0">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="auto"/>
-							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="auto"/>
-						</Grid.ColumnDefinitions>
-						<TextBlock Grid.Column="0" Text="Blend name"/>
-						<TextBox Grid.Column="1" Text="{Binding BlendName}"/>
-						<Button Grid.Column="2" Content="Save blend" Click="SaveBlend_Click"/>
-					</Grid>
-
-					<TextBlock Text="Saved blends" Grid.Row="3" FontWeight="Bold" Margin="0,10,0,0"/>
-					<Grid Grid.Row="4">
-						<local:BlendDisplayTable DataContext="{Binding BlendPlaylistManager }"/>
-					</Grid>
+				<TextBlock Text="Saved blends" Grid.Row="0" FontWeight="Bold" Margin="0,10,0,0"/>
+				<Grid Grid.Row="1">
+					<local:BlendDisplayTable DataContext="{Binding BlendPlaylistManager }"/>
 				</Grid>
-				<Button Grid.Row="2" Content="Generate" Click="GeneratePlaylist_Click" IsEnabled="{Binding BlendPlaylistManager.HasItemSelected}" Margin="0,5,0,0" />
+				<Button Grid.Row="2" Content="Edit blends" Click="EditBlends_Click" Margin="0,5,0,0" />
+				<Button Grid.Row="3" Content="Generate blend" Command="{Binding OnGenerateBlendCommand}" Margin="0,5,0,0" />
 			</Grid>
 			<Grid Grid.Column="1" Grid.Row="0" Margin="9,4" Background="#FFC9C9C9">
 				<Image/>

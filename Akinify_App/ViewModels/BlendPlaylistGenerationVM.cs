@@ -1,46 +1,15 @@
 ﻿using SpotifyAPI.Web;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace Akinify_App {
 	public class BlendPlaylistGenerationVM : BaseGenerationVM {
 		public EnumBindingSourceExtension SearchDepthEnumBindingSource { get; } = new EnumBindingSourceExtension(typeof(SearchDepth));
-
-		/*
-		 * User functions
-		 */
-		public SpotifyClient CurrentUser => Endpoint.Client;
-		public PrivateUser CurrentUserProfile => Endpoint.UserProfile;
-
-		public string UserDisplayName => CurrentUserProfile != null ? $"Logged in as: {CurrentUserProfile.DisplayName}" : "Not logged in";
 		public bool IsLoggedIn => Endpoint.IsLoggedIn;
 
-		/*
-		 * Search query
-		 */
-		public SearchQueryUser SearchQuery { get; private set; }
-
-		public string SearchText {
-			set {
-				SearchQuery.SearchText = value;
-				OnPropertyChanged(nameof(SearchText));
-			}
-			get {
-				return SearchQuery.SearchText;
-			}
-		}
-
-		public string UserSearchText {
-			set {
-				SearchQuery.SearchText = value;
-				OnPropertyChanged(nameof(UserSearchText));
-			}
-			get {
-				return SearchQuery.SearchText;
-			}
-		}
+		public SimpleCommand OnGenerateBlendCommand { get; set; }
+		public bool HasBlendSelected => BlendPlaylistManager != null ? BlendPlaylistManager.HasItemSelected : false;
 
 		/*
 		 * Blend groups
@@ -68,9 +37,9 @@ namespace Akinify_App {
 
 		public BlendPlaylistGenerationVM(ProgressBar searchProgressBar, TextBlock searchProgressText, ScrollViewer logScrollViewer) {
 			Endpoint.OnLoggedIn += () => {
-				OnPropertyChanged(nameof(CurrentUser));
-				OnPropertyChanged(nameof(CurrentUserProfile));
 				OnPropertyChanged(nameof(IsLoggedIn));
+				BlendPlaylistManager = BlendPlaylistManager.Load();
+				OnPropertyChanged(nameof(HasBlendSelected));
 			};
 
 			m_LogScrollViewer = logScrollViewer;
@@ -85,36 +54,18 @@ namespace Akinify_App {
 				}
 			});
 
-			SearchQuery = new SearchQueryUser(this);
-			OnPropertyChanged(nameof(SearchQuery));
-
-			BlendPlaylistManager = BlendPlaylistManager.Load();
+			OnGenerateBlendCommand = new SimpleCommand(GeneratePlaylist, () => HasBlendSelected);
 		}
 
-		public async void CreateNewBlend() {
-			FullPlaylist playlist = await CreatePlaylist(BlendName);
-			BlendPlaylistGroup group = BlendPlaylistManager.AddGroup(BlendName, playlist.Id);
-			foreach(PublicUser user in SearchQuery.Items) {
-				SimplePlaylist onRepeatPlaylist = await SearchQuery.GetOnRepeatPlaylist(user.Id);
-				group.AddUser(user.Id, onRepeatPlaylist?.Id, onRepeatPlaylist?.Name);
-			}
-
-			BlendPlaylistManager.Save();
-			OnPropertyChanged(nameof(BlendPlaylistManager));
+		public void OpenBlendGroupEditor() {
+			BlendGroupEditor.Show(BlendPlaylistManager);
 		}
 
-		public async void UpdateBlend() {
-			BlendPlaylistGroup toUpdate = BlendPlaylistManager.SelectedItem;
-			await SearchQuery.UpdatePlaylist(toUpdate.GeneratedPlaylistId, toUpdate.PlaylistIds.ToArray());
-		}
-
-		/*
-		 * Spotify API calls
-		 */
-		public async Task<FullPlaylist> CreatePlaylist(string name) {
-			PlaylistCreateRequest request = new PlaylistCreateRequest(name);
-			//request.Description = Playlist.Description;
-			return await CurrentUser.Playlists.Create(CurrentUserProfile.Id, request);
+		private async void GeneratePlaylist() {
+			BlendPlaylistGenerator generator = new BlendPlaylistGenerator(this);
+			//Task.Run(async () => {
+				await generator.UpdatePlaylist(BlendPlaylistManager.SelectedItem.GeneratedPlaylistId, BlendPlaylistManager.SelectedItem.Users.Select((user) => user.PlaylistId).ToArray());
+			//});
 		}
 	}
 }

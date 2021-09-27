@@ -15,19 +15,8 @@ namespace Akinify_App {
 			DataContext = m_ViewModel;
 		}
 
-		private void UserTextBox_Update(object sender, RoutedEventArgs e) {
-			m_ViewModel.UserSearchText = (sender as TextBox).Text;
-		}
-
-		private void AddUser_Click(object sender, RoutedEventArgs e) {
-			m_ViewModel.SearchQuery.ConfirmSearchText();
-		}
-		private void GeneratePlaylist_Click(object sender, RoutedEventArgs e) {
-			m_ViewModel.UpdateBlend();
-		}
-
-		private void SaveBlend_Click(object sender, RoutedEventArgs e) {
-			m_ViewModel.CreateNewBlend();
+		private void EditBlends_Click(object sender, RoutedEventArgs e) {
+			m_ViewModel.OpenBlendGroupEditor();
 		}
 	}
 }

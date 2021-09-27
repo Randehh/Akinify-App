@@ -4,7 +4,7 @@ namespace Akinify_App {
 
 		public BlendDisplayTable() : base() {
 			CreateNewColumn("Blend name", "Name");
-			CreateNewColumn("Users", "UserIds", new StringListDisplayConverter());
+			CreateNewColumn("Users", "Users", new BlendPlaylistUserConverter());
 		}
 	}
 }

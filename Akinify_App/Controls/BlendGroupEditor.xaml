@@ -1,0 +1,67 @@
+﻿<Window x:Class="Akinify_App.BlendGroupEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Akinify_App"
+        mc:Ignorable="d"
+		Width="800" Height="500"
+		WindowStartupLocation="CenterScreen"
+        Title="Blend Group Editor">
+	<Window.Resources>
+		<DataTemplate x:Key="userTemplate">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="3*"/>
+					<ColumnDefinition Width="3*"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+
+				<TextBlock Text="{Binding UserId}" Grid.Column="0"/>
+				<ComboBox Grid.Column="1" ItemsSource="{Binding Playlists}" SelectedValue="{Binding PlaylistId}" SelectedValuePath="Id" DisplayMemberPath="DisplayName"/>
+				<Button Content="Remove" Grid.Column="2"/>
+			</Grid>
+		</DataTemplate>
+	</Window.Resources>
+	
+	<Grid Margin="5">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="10"/>
+			<ColumnDefinition Width="2*"/>
+		</Grid.ColumnDefinitions>
+
+		<Grid Grid.Column="0">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="auto"/>
+				<RowDefinition Height="auto"/>
+			</Grid.RowDefinitions>
+			<local:BlendDisplayTable DataContext="{Binding BlendPlaylistManager}" Grid.Row="0"/>
+			<Button Content="New blend" Command="{Binding CreateNewBlendCommand}" Grid.Row="1" Margin="0,5,0,0"/>
+			<Button Content="Delete blend"  Command="{Binding RemoveSelectedBlendCommand}" Grid.Row="2" Margin="0,5,0,0"/>
+		</Grid>
+
+		<Grid Grid.Column="2">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="auto"/>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="auto"/>
+				<RowDefinition Height="auto"/>
+			</Grid.RowDefinitions>
+			<Grid Margin="0,0,0,5" Grid.Row="0">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="3*"/>
+					<ColumnDefinition Width="3*"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<TextBlock Text="Username" Grid.Column="0"/>
+				<TextBlock Text="Playlist" Grid.Column="1"/>
+			</Grid>
+			<ListBox ItemsSource="{Binding BlendPlaylistManager.SelectedItem.Users}" ItemTemplate="{StaticResource userTemplate}" Grid.Row="1" HorizontalContentAlignment="Stretch"/>
+			<Button Content="Add new user" Command="{Binding AddNewUserCommand}" Grid.Row="2" Margin="0,5,0,0"/>
+			<Button Content="Save" Command="{Binding SaveCommand}" Grid.Row="3" Margin="0,5,0,0"/>
+		</Grid>
+		
+	</Grid>
+</Window>
