@@ -51,7 +51,6 @@
 						<Grid.RowDefinitions>
 							<RowDefinition Height="auto"/>
 							<RowDefinition Height="auto"/>
-							<RowDefinition Height="auto"/>
 						</Grid.RowDefinitions>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="auto"/>
@@ -78,24 +77,6 @@
 							<TextBlock Text="{Binding Playlist.ArtistCount}" Grid.Row="2" Grid.Column="1"/>
 							<TextBlock Text="Album count:" Grid.Row="3" Grid.Column="0"/>
 							<TextBlock Text="{Binding Playlist.AlbumCount}" Grid.Row="3" Grid.Column="1"/>
-						</Grid>
-						<Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="0,5,0,0" IsEnabled="{Binding SearchProgressBar.IsCompleted}">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="auto"/>
-								<ColumnDefinition Width="*"/>
-
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="auto"/>
-								<RowDefinition Height="auto"/>
-								<RowDefinition Height="5"/>
-								<RowDefinition Height="auto"/>
-							</Grid.RowDefinitions>
-
-							<TextBlock Text="Playlist creation" Grid.Row="0" Grid.ColumnSpan="5" FontWeight="Bold" Margin="0,0,0,5"/>
-							<TextBlock Text="Name:" Grid.Row="1" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Center"/>
-							<TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Margin="0,0,0,0" Text="{Binding Playlist.Name}"/>
-							<Button Content="Create playlist" Grid.Row="3" Grid.Column="4"/>
 						</Grid>
 					</Grid>
 				</Grid>
